@@ -1,0 +1,54 @@
+body{
+  margin: 0%;
+}
+
+.boxes{
+  padding: 20px;
+  transition: transform 0.3s ease; 
+ 
+}
+
+.innerbox{
+  height: 70vh;
+  background-color: rgb(123, 123, 255);
+}
+
+.boxes :hover {
+  transform: scale(0.8);
+}
+.boxes a{
+  text-decoration: none;
+  color: black;
+}
+
+.innerbox h3 {
+  padding-top: 10px;
+  padding-left: 10px;
+  font-size: 60px;
+}
+
+header a{
+  color: white;
+}
+
+#center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: rgb(123, 123, 255);
+  padding: 150px;
+  z-index: 6;
+}
+#detail {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: rgb(123, 123, 255);
+  padding: 60px;
+  display: none;
+}
+#newcat {
+  display: none;
+}

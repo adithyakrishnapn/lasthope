@@ -1,0 +1,50 @@
+<section style="padding-top: 100px;">
+    <div class="container">
+        <div class="row">
+            <button onclick="window.location.href='/views/check1'">Lost Items</button>
+            <button onclick="window.location.href='/views/check2'">Found Items</button>
+        </div>
+    </div>
+    <div class="container">
+    <div class="row">
+      {{#if product.length}}
+        {{#each product}}
+        <div class="col-md-4">
+          <div class="card p-3" style="width: 18rem;">
+            <img src="/product-images/{{this._id}}.jpg" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{this.category}}</h5>
+              <h6>Card no : {{this.number}}</h6>
+              <h6>Card Holder name : {{this.name}}</h6>
+              <h6>Lost : {{this.lostPlace}}</h6>
+              <p class="card-text">Dummy text</p>
+              <a href="#" class="btn btn-primary">Details</a>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      {{/if}}
+    </div>
+
+    <div class="row">
+      {{#if found.length}}
+        {{#each found}}
+        <div class="col-md-4">
+          <div class="card p-3" style="width: 18rem;">
+            <img src="/product-images/{{this._id}}.jpg" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{this.category}}</h5>
+              <h6>Card no : {{this.number}}</h6>
+              <h6>Card Holder name : {{this.name}}</h6>
+              <h6>Found : {{this.findPlace}}</h6>
+              <p class="card-text">Dummy text</p>
+              <a href="#" class="btn btn-primary">Details</a>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      {{/if}}
+    </div>
+  </div>
+
+</section>

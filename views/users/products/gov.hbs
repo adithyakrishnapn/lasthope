@@ -1,0 +1,38 @@
+<section style="padding-top: 100px;">
+    <div class="container" style="padding-top: 100px;">
+        <div class="row">
+            <div class="form">
+                <form action="/submitGov" method="post">
+                    <div id="center">
+                        <h2 style="color: white;">What did you Lose ?</h2>
+                        <label for="category">Select category:</label>
+                        <select name="category" id="category">
+                            <option value="Aadhar Card">Aadhar Card</option>
+                            <option value="Pan Card">Pan Card</option>
+                            <option value="Ration Card">Ration Card</option>
+                            <option value="Driving Liscence">Driving License</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" placeholder="Specify Category" id="newcat">
+                        <button type="button" onclick="details(event)">Next</button>
+                    </div>
+                    <div id="detail">
+                        <h2 style="color: white;" id="headingdetails">Fill the details</h2>
+                        <label id="numberlabel">Aadhar Number : </label><br>
+                        <input type="number" name="number" id="aadharNumber" placeholder=""><br>
+
+                        <label id="namelabel">Aadhar Holder Name : </label><br>
+                        <input type="text" name="name" id="aadharName" placeholder=""><br>
+
+                        <label>Where did you lost : </label><br>
+                        <input type="text" name="lostPlace" placeholder="Last used/seen"><br>
+
+                        <label>Tell something ? : </label><br>
+                        <textarea id="w3review" name="review" rows="4" cols="50" placeholder="Specify....."></textarea><br>
+                        <br><button type="submit">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

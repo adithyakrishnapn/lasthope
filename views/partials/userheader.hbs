@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-dark"
+    style="width: 100%; position: fixed; top: 0%; z-index: 99999;">
+    <a class="navbar-brand" href="#" style="color:white; padding-left: 10px;">Lasthope</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup" style="z-index: 1000;">
+        <div class="navbar-nav">
+            {{#if main}}
+            <a class="nav-item nav-link active" href="/" style="color:rgb(0, 123, 255)">Home</a>
+            {{else}}
+            <a class="nav-item nav-link active" href="/" style="color:rgb(255, 255, 255)">Home</a>
+            {{/if}}
+
+
+            {{#if ls}}
+            <a class="nav-item nav-link" href="/lostSomething" style="color:rgb(0, 123, 255)">Lost ?</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/lostSomething" style="color:white">Lost ?</a>
+            {{/if}}
+
+            {{#if fs}}
+            <a class="nav-item nav-link" href="/foundsomething" style="color:rgb(0, 123, 255)">Found ?</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/foundsomething" style="color:white">Found ?</a>
+            {{/if}}
+
+
+            {{#if user}}
+            <a class="nav-item nav-link" href="" style="color:rgb(0, 123, 255)">{{user.username}}</a>
+            <a class="nav-item nav-link" href="/logout" style="color:white">Log Out</a>
+            {{else}}
+            {{#if sp}}
+            <a class="nav-item nav-link" href="/signup" style="color:rgb(0, 123, 255)">Sign up</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/signup" style="color:white">Sign up</a>
+            {{/if}}
+            {{#if sn}}
+            <a class="nav-item nav-link" href="/signIn" style="color: rgb(0, 123, 255)">Log In</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/signIn" style="color:white">Log In</a>
+            {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</nav>
