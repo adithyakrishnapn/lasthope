@@ -1,0 +1,42 @@
+<section class="panel">
+    <div class="dash">
+        <img id="profileImage" src="/images/user.jpg">
+        <h5 class="pt-2" style="text-align: center;">{{user.username}}</h5>
+        <hr>
+
+        <div class="dashButtons">
+            <button class="btnLS">Found</button>
+            <button class="btnLS">Lost</button>
+            <button class="btnLS">Settings</button>
+        </div>
+    </div>
+
+
+    <div class="detailedcontent">
+        <h4>Lost Items That {{user.username}} Posted</h4>
+        {{#if details}}
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Id.No</th>
+                <th>lost Place</th>
+                <th>Review</th>
+            </tr>
+            <tr>
+                {{#each details}}
+                <td>{{math @index "+" 1}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.number}}</td>
+                <td>{{this.lostPlace}}</td>
+                <td>{{this.review}}</td>
+            </tr>
+                {{/each}}
+            {{else}}
+            <p>No data available</p>
+            {{/if}}
+        </table>
+    </div>
+</section>

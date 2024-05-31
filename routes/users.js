@@ -110,14 +110,14 @@ router.post('/login', (req, res) => {
         helperFunction(detailsToSave).then(() => {
           console.log("Data inserted successfully");
           req.session.formData = null; // Clear the formData from session after saving
-          res.redirect('/'); // Redirect to home or another appropriate route after successful insertion
+          res.redirect('/userpanel'); // Redirect to home or another appropriate route after successful insertion
         }).catch(error => {
           console.error("Error inserting data: ", error);
           res.status(500).send("Failed to insert form data");
         });
       } else {
         // No form data to process, redirect to home or another appropriate route
-        res.redirect('/');
+        res.redirect('/userpanel');
       }
     } else {
       console.log("Login failed");
@@ -140,6 +140,7 @@ router.post('/submitGov', login, (req, res, next) => {
 
   userhelper.AddDetails(details).then((response) => {
     console.log(response);
+    res.redirect('/userpanel')
   })
 })
 
@@ -204,6 +205,19 @@ router.post('/foundGov', login, (req, res) => {
   userhelper.FoundItems(details).then((response) => {
     console.log(response);
   })
+})
+
+//userDashboard
+router.get('/userpanel', login, (req, res) => {
+  let user = req.session.user;
+  let mail = req.session.mail;
+  console.log(user);
+  userhelper.UserDetails(mail).then((details) => {
+    console.log("fetched")
+
+    res.render('users/userpanel', { title: 'User', user, details })
+  })
+
 })
 
 module.exports = router;

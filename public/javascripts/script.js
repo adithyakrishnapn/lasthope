@@ -32,21 +32,23 @@ function details(event) {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-
-
-    category.addEventListener('change', () => {
-    
-        if (category.value === 'Other') {
-            displayFunction();
-        } else {
-            newcat.style.display = 'none';
-        }
-    });
-
-});
-
-
 function displayFunction() {
     newcat.style.display = 'block';
 }
+
+
+// //functions for header username hover action
+// function displaybtns() {
+//     let btns = document.getElementById("morebtns");
+//     btns.style.display = "block";
+// }
+
+// function hidebtns() {
+//     let userbtns = document.getElementById('userbtns');
+//     let morebtns = document.getElementById('morebtns');
+//     let mouseOverElements = [userbtns, morebtns];
+
+//     if (!mouseOverElements.some(el => el.matches(':hover'))) {
+//         morebtns.style.display = "none";
+//     }
+// }

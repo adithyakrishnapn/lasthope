@@ -48,7 +48,9 @@ module.exports = {
                 });
         });
     },
-    
+
+
+    //These are the products which are lost
     GetItems: ()=>{
         return new Promise(async(resolve,reject)=>{
             let product =await db.get().collection(collections.Product_Collection).find().toArray().then((response)=>{
@@ -57,6 +59,8 @@ module.exports = {
         })
     },
 
+
+    //These are the found ones
     FoundItems: (data)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection(collections.Found_Collection).insertOne(data).then((response)=>{
@@ -76,6 +80,17 @@ module.exports = {
                 resolve(response);
             })
             .catch((err)=>{
+                reject(err);
+            })
+        })
+    },
+
+    UserDetails : (mail)=>{
+        return new Promise(async(resolve,reject)=>{
+            await db.get().collection(collections.Product_Collection).find({ email : mail}).toArray().then((response)=>{
+                resolve(response);
+            }).catch((err)=>{
+                console.log("error found", err);
                 reject(err);
             })
         })

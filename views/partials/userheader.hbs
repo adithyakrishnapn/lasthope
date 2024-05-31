@@ -28,8 +28,16 @@
 
 
             {{#if user}}
-            <a class="nav-item nav-link" href="" style="color:rgb(0, 123, 255)">{{user.username}}</a>
-            <a class="nav-item nav-link" href="/logout" style="color:white">Log Out</a>
+            <div>
+                <a class="nav-item nav-link userbtn"
+                    style="color:rgb(0, 123, 255); background-color: white;">{{user.username}}</a>
+                <div class="morebtns" id="morebtns">
+                    <a class="nav-item nav-link" id="userbtn1" href="/userPanel"
+                        style="color:rgb(0, 123, 255)">Dashboard</a>
+                    <a class="nav-item nav-link" id="userbtn2" href="/logout"
+                        style="color:rgb(0, 123, 255)">Logout</a>
+                </div>
+            </div>
             {{else}}
             {{#if sp}}
             <a class="nav-item nav-link" href="/signup" style="color:rgb(0, 123, 255)">Sign up</a>
