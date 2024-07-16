@@ -1,0 +1,53 @@
+<section style="padding-top: 70px; padding-bottom: 70px;">
+    {{#if foundItem}}
+    <hr>
+    <div style="display: flex;">
+        <h6>Topic :</h6>
+        <h6 style="font-weight: 500;">Found Items</h6>
+    </div>
+    <hr>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="https://via.placeholder.com/500" alt="Product Image" class="product-image">
+            </div>
+            <div class="col-md-6" style="padding-top: 10%;">
+                <h1 class="product-name">{{foundItem.category}}</h1>
+                <div class="price">{{foundItem.number}}</div>
+                <div class="price">{{foundItem.name}}</div>
+                <p class="product-description">
+                    {{foundItem.review}}
+                </p>
+                <center><a href="/chat/found{{foundItem._id}}" class="btn btn-primary btn-lg mt-3">Chat</a></center>
+            </div>
+        </div>
+    </div>
+    {{else if lostItem}}
+    <hr>
+    <div style="display: flex;">
+        <h6>Topic :</h6>
+        <h6 style="font-weight: 500;">Lost Items</h6>
+    </div>
+    <hr>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="https://via.placeholder.com/500" alt="Product Image" class="product-image">
+            </div>
+            <div class="col-md-6" style="padding-top: 10%;">
+                <h1 class="product-name">{{lostItem.category}}</h1>
+                <div class="price">{{lostItem.number}}</div>
+                <div class="price">{{lostItem.name}}</div>
+                <p class="product-description">
+                    {{lostItem.w3review}}
+                </p>
+                <center><a href="/chat/product{{lostItem._id}}" class="btn btn-primary btn-lg mt-3">Chat</a></center>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <div class="container mt-5">
+        <h2>Oops....No data found</h2>
+    </div>
+    {{/if}}
+</section>

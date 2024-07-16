@@ -5,38 +5,54 @@
         <hr>
 
         <div class="dashButtons">
-            <button class="btnLS">Found</button>
-            <button class="btnLS">Lost</button>
+            <button onclick="window.location.href='/userpanel/found'" class="btnLS">Found</button>
+            <button onClick="window.location.href='/userpanel/lost'" class="btnLS">Lost</button>
             <button class="btnLS">Settings</button>
+            <button onclick="window.location.href='/userpanel/chatspanel'" class="btnLS">Chats</button>
         </div>
     </div>
 
 
-    <div class="detailedcontent">
-        <h4>Lost Items That {{user.username}} Posted</h4>
-        {{#if details}}
+    <div class="detailedcontent" style="padding-top: 70px; padding-bottom: 70px;">
+        <h4>{{nm}} Items That {{user.username}} Posted</h4>
+
         <table>
             <tr>
                 <th>No</th>
                 <th>Category</th>
                 <th>Name</th>
                 <th>Id.No</th>
-                <th>lost Place</th>
+                <th>Lost/Found Place</th>
                 <th>Review</th>
             </tr>
+            {{#if lostItem}}
+            {{#each lostItem}}
             <tr>
-                {{#each details}}
                 <td>{{math @index "+" 1}}</td>
-                <td>{{this.name}}</td>
                 <td>{{this.category}}</td>
+                <td>{{this.name}}</td>
                 <td>{{this.number}}</td>
                 <td>{{this.lostPlace}}</td>
                 <td>{{this.review}}</td>
             </tr>
-                {{/each}}
+            {{/each}}
+            {{else if foundItem}}
+            {{#each foundItem}}
+            <tr>
+                <td>{{math @index "+" 1}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.number}}</td>
+                <td>{{this.findPlace}}</td>
+                <td>{{this.review}}</td>
+            </tr>
+            {{/each}}
             {{else}}
-            <p>No data available</p>
+            <tr>
+                <td colspan="6">No data available</td>
+            </tr>
             {{/if}}
         </table>
+
     </div>
 </section>

@@ -1,0 +1,84 @@
+<section style="padding-top: 70px; padding-bottom: 70px;">
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <!-- Messages will be displayed here -->
+            <h5 style="color: black;">Messages</h5>
+            <p style="color: black;">Messages will be deleted within 48hrs</p>
+            {{#if messages}}
+            {{#each messages}}
+            <div class="chat-message">
+                <strong>{{this.username}}:</strong> {{this.message}}
+            </div>
+            {{/each}}
+            {{else}}
+            <h6 style="color: black;">No Messages</h6>
+            {{/if}}
+        </div>
+        <div class="message-input">
+            <input type="text" id="message-input" placeholder="Type a message">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="background-color: rgb(131, 131, 131); border-radius: 2cm;">
+            {{#if foundItem}}
+            <div class="col-3 p-2" style="display: flex; justify-content: center; align-items: center;">
+                <img src="{{foundItem.image}}" width="100px" height="100px">
+            </div>
+            <div class="col-9 p-2" style="text-align: center;">
+                <h3>{{foundItem.category}}</h3>
+                <h5>{{foundItem.name}}</h5>
+                <h5>{{foundItem.number}}</h5>
+            </div>
+            {{else if lostItem}}
+            <div class="col-3 p-2" style="display: flex; justify-content: center; align-items: center;">
+                <img src="{{lostItem.image}}" width="100px" height="100px">
+            </div>
+            <div class="col-9 p-2" style="text-align: center;">
+                <h3>{{lostItem.category}}</h3>
+                <h5>{{lostItem.name}}</h5>
+                <h5>{{lostItem.number}}</h5>
+            </div>
+            {{else}}
+            <h5>No data Found</h5>
+            {{/if}}
+        </div>
+    </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('connect', () => {
+        console.log('Connected to the server');
+        const productId = "{{#if foundItem}}{{foundItem._id}}{{else}}{{lostItem._id}}{{/if}}";
+        socket.emit('join room', productId);
+    });
+
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', () => {
+        const message = messageInput.value;
+        if (message.trim()) {
+            const userId = "{{user._id}}"; // Adjust based on your user data
+            const username = "{{user.username}}"; // Adjust based on your user data
+            const productId = "{{#if foundItem}}{{foundItem._id}}{{else}}{{lostItem._id}}{{/if}}";
+            const sendermail = "{{#if userSend}}{{sendermail}}{{else}}{{user.mail}}{{/if}}";
+            const receivermail = "{{receivermail}}";
+            const category = "{{category}}";
+            socket.emit('chat message', { productId, userId, username, content: message, sendermail, receivermail, category });
+            messageInput.value = '';
+        }
+    });
+
+    socket.on('chat message', (msg) => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chat-message');
+        messageElement.innerHTML = `<strong>${msg.username}:</strong> ${msg.content}`;
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    });
+</script>

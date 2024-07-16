@@ -1,0 +1,42 @@
+<section>
+    <div class="dash">
+        <img id="profileImage" src="/images/user.jpg">
+        <h5 class="pt-2" style="text-align: center;">{{user.username}}</h5>
+        <hr>
+
+        <div class="dashButtons">
+            <button onclick="window.location.href='/userpanel/found'" class="btnLS">Found</button>
+            <button onClick="window.location.href='/userpanel/lost'" class="btnLS">Lost</button>
+            <button class="btnLS">Settings</button>
+            <button onclick="window.location.href='/userpanel/chatspanel'" class="btnLS">Chats</button>
+        </div>
+    </div>
+
+
+
+    <div class="detailedcontent" style="padding-top: 70px; padding-bottom: 70px;">
+        <div class="container">
+            <div class="content">
+                <div class="section products">
+                    <h3>Chats</h3>
+                    {{#if messages}}
+                    {{#each messages}}
+                        <div class="item">
+                            <img src="/images/product1.jpg" alt="Product 1">
+                            <div class="details">
+                                <h6 onclick="window.location.href='/chat/product{{this._id}}'">{{this.username}}</h6>
+                                <p style="font-weight: 600;">{{this.message}}</p>
+                                <p>{{this.timestamp}}</p>
+                            </div>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <p>No products</p>
+                        {{/if}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

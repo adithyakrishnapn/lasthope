@@ -1,50 +1,123 @@
 <section style="padding-top: 100px;">
-    <div class="container">
-        <div class="row">
-            <button onclick="window.location.href='/views/check1'">Lost Items</button>
-            <button onclick="window.location.href='/views/check2'">Found Items</button>
-        </div>
-    </div>
-    <div class="container">
+  <div class="container">
+    <button onclick="window.location.href='/views/check1'">Lost Items</button>
+    <button onclick="window.location.href='/views/check2'">Found Items</button>
+  </div>
+  <hr>
+  {{#if found}}
+  <div style="display: flex;">
+    <h6>Topic :</h6>
+    <h6 style="font-weight: 500;">Found Items</h6>
+  </div>
+  <hr>
+  <div class="colm">
+    <h6 onclick="foundfilter()">Filter</h6>
+    <h6 onclick="foundsort()">Sort</h6>
+  </div>
+  <div class="filter" id="foundfilter">
+    <form action="/views/check3" method="get">
+      <p>Place :</p>
+      <select name="fplace">
+        <option></option>
+        {{#each place}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select><br><br>
+      <p>Category :</p>
+      <select name="fcategories">
+        <option></option>
+        {{#each categories}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select><br><br>
+      <p>Date :</p><br>
+      <input type="submit" value="set">
+    </form>
+  </div>
+  <div class="sort" id="foundsort">
+    <p>Newest first</p>
+    <p>Ascending</p>
+    <p>Descending</p>
+  </div>
+  {{/if}}
+
+  {{#if product}}
+  <div style="display: flex;">
+    <h6>Topic :</h6>
+    <h6 style="font-weight: 500;">Lost Items</h6>
+  </div>
+  <hr>
+  <div class="colm">
+    <h6 onclick="lostfilter()">Filter</h6>
+    <h6 onclick="lostsort()">Sort</h6>
+  </div>
+  <div class="filter" id="lostfilter">
+    <form action="/views/check4" method="get">
+      <p>Place :</p>
+      <select name="fplace">
+        <option></option>
+        {{#each place}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select><br><br>
+      <p>Category :</p>
+      <select name="fcategories">
+        <option></option>
+        {{#each categories}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select><br><br>
+      <p>Date :</p><br>
+      <input type="submit" value="set">
+    </form>
+  </div>
+  <div class="sort" id="lostsort">
+    <p>Newest first</p>
+    <p>Ascending</p>
+    <p>Descending</p>
+  </div>
+  {{/if}}
+  <hr>
+  <div class="container">
     <div class="row">
       {{#if product.length}}
-        {{#each product}}
-        <div class="col-md-4">
-          <div class="card p-3" style="width: 18rem;">
-            <img src="/product-images/{{this._id}}.jpg" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">{{this.category}}</h5>
-              <h6>Card no : {{this.number}}</h6>
-              <h6>Card Holder name : {{this.name}}</h6>
-              <h6>Lost : {{this.lostPlace}}</h6>
-              <p class="card-text">Dummy text</p>
-              <a href="#" class="btn btn-primary">Details</a>
-            </div>
+      {{#each product}}
+      <div class="col-md-4">
+        <div class="card p-3" style="width: 18rem;">
+          <img src="/product-images/{{this._id}}.jpg" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{this.category}}</h5>
+            <h6>Card no : {{this.number}}</h6>
+            <h6>Card Holder name : {{this.name}}</h6>
+            <h6>Lost : {{this.lostPlace}}</h6>
+            <a href="/view-products/product{{this._id}}" class="btn btn-primary">Details</a>
           </div>
         </div>
-        {{/each}}
+      </div>
+      {{/each}}
       {{/if}}
     </div>
 
     <div class="row">
       {{#if found.length}}
-        {{#each found}}
-        <div class="col-md-4">
-          <div class="card p-3" style="width: 18rem;">
-            <img src="/product-images/{{this._id}}.jpg" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">{{this.category}}</h5>
-              <h6>Card no : {{this.number}}</h6>
-              <h6>Card Holder name : {{this.name}}</h6>
-              <h6>Found : {{this.findPlace}}</h6>
-              <p class="card-text">Dummy text</p>
-              <a href="#" class="btn btn-primary">Details</a>
-            </div>
+      {{#each found}}
+      <div class="col-md-4">
+        <div class="card p-3" style="width: 18rem;">
+          <img src="/product-images/{{this._id}}.jpg" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{this.category}}</h5>
+            <h6>Card no : {{this.number}}</h6>
+            <h6>Card Holder name : {{this.name}}</h6>
+            <h6>Found : {{this.findPlace}}</h6>
+            <a href="/view-products/found{{this._id}}" class="btn btn-primary">Details</a>
           </div>
         </div>
-        {{/each}}
+      </div>
+      {{/each}}
       {{/if}}
     </div>
   </div>
+
+
 
 </section>

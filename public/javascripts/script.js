@@ -52,3 +52,52 @@ function displayFunction() {
 //         morebtns.style.display = "none";
 //     }
 // }
+
+//lost filter and sort
+function lostfilter(){
+    let lostfilter = document.getElementById('lostfilter');
+    let lostsort = document.getElementById('lostsort');
+
+    if(lostfilter.style.display === 'none' || lostfilter.style.display === ''){
+        lostsort.style.display = 'none';//incase its visible
+        lostfilter.style.display = 'block';
+    }else{
+        lostfilter.style.display = 'none'
+    }
+}
+
+function lostsort(){
+    let lostsort = document.getElementById('lostsort');
+    let lostfilter = document.getElementById('lostfilter');
+
+    if(lostsort.style.display === 'none' || lostsort.style.display === ''){
+    lostfilter.style.display = 'none' //Incase if its visible
+    lostsort.style.display = 'block';
+    }else{
+        lostsort.style.display = 'none'
+    }
+}
+//found filter and sort
+function foundfilter(){
+    let foundfilter = document.getElementById('foundfilter');
+    let foundsort = document.getElementById('foundsort');
+
+    if(foundfilter.style.display === 'none' || foundfilter.style.display === ''){
+        foundsort.style.display = 'none' // incase if its visible
+        foundfilter.style.display = 'block';
+    }else{
+        foundfilter.style.display = 'none'
+    }
+}
+
+function foundsort(){
+    let foundsort = document.getElementById('foundsort');
+    let foundfilter = document.getElementById('foundfilter');
+
+    if(foundsort.style.display === 'none' || foundsort.style.display === ''){
+    foundfilter.style.display = 'none' //Incase if its vsble
+    foundsort.style.display = 'block';
+    }else{
+        foundsort.style.display = 'none'
+    }
+}

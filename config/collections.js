@@ -1,6 +1,6 @@
 module.exports ={
     User_Collection : "user",
     Product_Collection : "items",
-    Found_Collection : "found"
-
+    Found_Collection : "found",
+    Mesage_Collection : "chatmessages"
 }
