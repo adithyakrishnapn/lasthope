@@ -437,13 +437,62 @@ router.get("/userpanel/chatspanel", login, async (req, res, next) => {
   }
 });
 
+
+router.get("/userpanel/founddel/:id", (req,res,next)=>{
+  let productId = req.params.id;
+  try {
+    userhelper.DeleteMessages(productId);
+    userhelper.FoundMessages(productId);
+    res.redirect('/userpanel/found');
+  } catch (error) {
+    next(error);  // Handle errors appropriately
+  }
+})
+
+router.get("/userpanel/Lostdel/:id", (req,res,next)=>{
+  let productId = req.params.id;
+  try {
+    userhelper.DeleteMessages(productId);
+    userhelper.LostMessages(productId);
+    res.redirect('/userpanel/lost');
+  } catch (error) {
+    next(error);  // Handle errors appropriately
+  }
+})
+
+
+router.get("/userpanel/lostcomplete/:id", (req,res,next)=>{
+  let productId = req.params.id;
+  try {
+    userhelper.updateMessageLost(productId);
+    const log = userhelper.GetLostById(productId);
+    console.log(log);
+    res.redirect('/userpanel/lost');
+  } catch (error) {
+    next(error);  // Handle errors appropriately
+  }
+})
+
+router.get("/userpanel/foundcomplete/:id", (req,res,next)=>{
+  let productId = req.params.id;
+  try {
+    userhelper.updateMessageFound(productId);
+    const log = userhelper.GetfoundById(productId);
+    console.log(log);
+    res.redirect('/userpanel/found');
+  } catch (error) {
+    next(error);  // Handle errors appropriately
+  }
+})
+
+
 router.get("/view-products/found:id", async (req, res, next) => {
   try {
     let user = req.session.user;
     const productId = req.params.id;
-    const lostItem = await userhelper.GetLostById(productId); // Ensure the function name matches your helper method
-    console.log(lostItem);
-    res.render("users/viewProducts", { title: "View", lostItem, user }); // Pass foundItem to the view
+    const foundItem = await userhelper.GetfoundById(productId); // Ensure the function name matches your helper method
+    console.log(foundItem);
+    res.render("users/viewProducts", { title: "View", foundItem, user }); // Pass foundItem to the view
   } catch (err) {
     next(err); // Pass the error to the error handler
   }

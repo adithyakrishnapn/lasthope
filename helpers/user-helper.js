@@ -401,9 +401,9 @@ module.exports = {
                 _id: "$userId",
                 message: { $last: "$message" },
                 username: { $first: "$username" },
-                productId: { $first:"$productId"},
+                productId: { $first: "$productId" },
                 sendermail: { $first: "$sendermail" },
-                category : { $first: "$category"},
+                category: { $first: "$category" },
                 timestamp: { $first: "$timestamp" },
               },
             },
@@ -417,7 +417,7 @@ module.exports = {
     });
   },
 
-  ShowMessagesId: (mail,name) => {
+  ShowMessagesId: (mail, name) => {
     return new Promise(async (resolve, reject) => {
       try {
         const messages = await db
@@ -426,11 +426,8 @@ module.exports = {
           .aggregate([
             {
               $match: {
-                $or: [
-                  { sendermail: mail },
-                  { receivermail: mail },
-                ],
-                username: {$ne : name},
+                $or: [{ sendermail: mail }, { receivermail: mail }],
+                username: { $ne: name },
               },
             },
             {
@@ -452,13 +449,192 @@ module.exports = {
             },
           ])
           .toArray();
-  
+
         resolve(messages);
       } catch (err) {
         reject(err);
       }
     });
   },
-  
 
+  DeleteMessages: (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbInstance = await db.get();
+
+        // Validate the ID format
+        if (!ObjectId.isValid(id)) {
+          return reject(new Error(`Invalid ID format: ${id}`));
+        }
+
+        const objectId = new ObjectId(id);
+
+        const response = await dbInstance
+          .collection(collections.Message_Collection)
+          .deleteMany({ productId: objectId });
+
+        if (response.deletedCount > 0) {
+          resolve(response);
+        } else {
+          reject(
+            new Error(`No messages found with the given product ID: ${id}`)
+          );
+        }
+      } catch (err) {
+        console.error(
+          `Error occurred while deleting messages with product ID: ${id}`,
+          err
+        );
+        reject(
+          new Error(
+            `Error occurred while deleting messages with product ID: ${id}`
+          )
+        );
+      }
+    });
+  },
+
+  FoundMessages: (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbInstance = await db.get();
+
+        // Validate the ID format
+        if (!ObjectId.isValid(id)) {
+          return reject(new Error(`Invalid ID format: ${id}`));
+        }
+
+        const objectId = new ObjectId(id);
+
+        const response = await dbInstance
+          .collection(collections.Found_Collection)
+          .deleteOne({ _id: objectId });
+
+        if (response.deletedCount > 0) {
+          resolve(response);
+        } else {
+          reject(
+            new Error(`No document found with the given product ID: ${id}`)
+          );
+        }
+      } catch (err) {
+        console.error(
+          `Error occurred while deleting found item with product ID: ${id}`,
+          err
+        );
+        reject(
+          new Error(
+            `Error occurred while deleting found item with product ID: ${id}`
+          )
+        );
+      }
+    });
+  },
+
+  LostMessages: (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbInstance = await db.get();
+
+        // Validate the ID format
+        if (!ObjectId.isValid(id)) {
+          return reject(new Error(`Invalid ID format: ${id}`));
+        }
+
+        const objectId = new ObjectId(id);
+
+        const response = await dbInstance
+          .collection(collections.Product_Collection)
+          .deleteOne({ _id: objectId });
+
+        if (response.deletedCount > 0) {
+          resolve(response);
+        } else {
+          reject(
+            new Error(`No document found with the given product ID: ${id}`)
+          );
+        }
+      } catch (err) {
+        console.error(
+          `Error occurred while deleting found item with product ID: ${id}`,
+          err
+        );
+        reject(
+          new Error(
+            `Error occurred while deleting found item with product ID: ${id}`
+          )
+        );
+      }
+    });
+  },
+
+  updateMessageLost : (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbInstance = await db.get();
+  
+        // Validate the ID format
+        if (!ObjectId.isValid(id)) {
+          return reject(new Error(`Invalid ID format: ${id}`));
+        }
+  
+        const objectId = new ObjectId(id);
+  
+        const response = await dbInstance
+          .collection(collections.Product_Collection) // replace with your collection name
+          .updateOne(
+            { _id: objectId },
+            { $set: { complete: 'success' } }
+          );
+  
+        if (response.modifiedCount > 0) {
+          resolve(response);
+        } else {
+          reject(new Error(`No document found with the given ID: ${id}`));
+        }
+      } catch (err) {
+        console.error(
+          `Error occurred while updating the document with ID: ${id}`,
+          err
+        );
+        reject(new Error(`Error occurred while updating the document with ID: ${id}`));
+      }
+    });
+  },
+
+
+  updateMessageFound : (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dbInstance = await db.get();
+  
+        // Validate the ID format
+        if (!ObjectId.isValid(id)) {
+          return reject(new Error(`Invalid ID format: ${id}`));
+        }
+  
+        const objectId = new ObjectId(id);
+  
+        const response = await dbInstance
+          .collection(collections.Found_Collection) // replace with your collection name
+          .updateOne(
+            { _id: objectId },
+            { $set: { complete: 'success' } }
+          );
+  
+        if (response.modifiedCount > 0) {
+          resolve(response);
+        } else {
+          reject(new Error(`No document found with the given ID: ${id}`));
+        }
+      } catch (err) {
+        console.error(
+          `Error occurred while updating the document with ID: ${id}`,
+          err
+        );
+        reject(new Error(`Error occurred while updating the document with ID: ${id}`));
+      }
+    });
+  },
+  
 };

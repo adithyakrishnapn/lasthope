@@ -82,8 +82,26 @@
     <div class="row">
       {{#if product.length}}
       {{#each product}}
-      <div class="col-md-4">
-        <div class="card p-3" style="width: 18rem;">
+
+      {{#if this.complete}}
+      <div class="col-md-4 pt-3 pb-3">
+        <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
+          <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24);">
+            <img src="/product-images/{{this._id}}.jpg" alt="...">
+            <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+              <strike><h5 class="card-title">{{this.category}}</h5></strike>
+              <strike><h6>Card no: {{this.number}}</h6></strike>
+              <strike><h6>Card Holder name: {{this.name}}</h6></strike>
+              <strike><h6>Lost: {{this.lostPlace}}</h6></strike>
+              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;"><h1>ACCOMPLISHED</h1></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{else}}
+
+      <div class="col-md-4 pt-3 pb-3">
+        <div class="card p-3" style="width: 100%;">
           <img src="/product-images/{{this._id}}.jpg" alt="...">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
@@ -92,8 +110,10 @@
             <h6>Lost : {{this.lostPlace}}</h6>
             <a href="/view-products/product{{this._id}}" class="btn btn-primary">Details</a>
           </div>
+
         </div>
       </div>
+      {{/if}}
       {{/each}}
       {{/if}}
     </div>
@@ -101,18 +121,37 @@
     <div class="row">
       {{#if found.length}}
       {{#each found}}
-      <div class="col-md-4">
-        <div class="card p-3" style="width: 18rem;">
+      {{#if this.complete}}
+      <div class="col-md-4 pt-3 pb-3">
+        <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
+          <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24);">
+            <img src="/product-images/{{this._id}}.jpg" alt="...">
+            <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+              <strike><h5 class="card-title">{{this.category}}</h5></strike>
+              <strike><h6>Card no: {{this.number}}</h6></strike>
+              <strike><h6>Card Holder name: {{this.name}}</h6></strike>
+              <strike><h6>Lost: {{this.lostPlace}}</h6></strike>
+              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;"><h1>ACCOMPLISHED</h1></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{else}}
+
+      <div class="col-md-4 pt-3 pb-3">
+        <div class="card p-3" style="width: 100%;">
           <img src="/product-images/{{this._id}}.jpg" alt="...">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
             <h6>Card no : {{this.number}}</h6>
             <h6>Card Holder name : {{this.name}}</h6>
-            <h6>Found : {{this.findPlace}}</h6>
+            <h6>Lost : {{this.lostPlace}}</h6>
             <a href="/view-products/found{{this._id}}" class="btn btn-primary">Details</a>
           </div>
+
         </div>
       </div>
+      {{/if}}
       {{/each}}
       {{/if}}
     </div>

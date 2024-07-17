@@ -18,7 +18,13 @@
                 <p class="product-description">
                     {{foundItem.review}}
                 </p>
+                {{#if foundItem.complete}}
+                <center>
+                    <h2 style="background-color: orange; padding: 10px;">COMPLETED</h2>
+                </center>
+                {{else}}
                 <center><a href="/chat/found{{foundItem._id}}" class="btn btn-primary btn-lg mt-3">Chat</a></center>
+                {{/if}}
             </div>
         </div>
     </div>
@@ -41,7 +47,13 @@
                 <p class="product-description">
                     {{lostItem.w3review}}
                 </p>
+                {{#if lostItem.complete}}
+                <center>
+                    <h2 style="background-color: orange; padding: 10px;">COMPLETED</h2>
+                </center>
+                {{else}}
                 <center><a href="/chat/product{{lostItem._id}}" class="btn btn-primary btn-lg mt-3">Chat</a></center>
+                {{/if}}
             </div>
         </div>
     </div>
