@@ -1,6 +1,11 @@
 body {
   margin: 0%;
 }
+/*Nav*/
+.navbar-nav .nav-item {
+  padding-left: 15px; /* Add padding to the left of each nav item */
+}
+/*Nav*/
 
 .boxes {
   padding: 20px;
