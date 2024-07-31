@@ -40,14 +40,15 @@ module.exports = {
       }
     });
   },
-  AddDetails: (data) => {
+  AddDetails : (data) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collections.Product_Collection)
         .insertOne(data)
         .then((response) => {
-          console.log(response.insertedId);
-          resolve(response.insertedId); // Resolve the promise with the inserted ID
+          const insertedId = new ObjectId(response.insertedId); // Convert the inserted ID to ObjectId
+          console.log(insertedId);
+          resolve(insertedId); // Resolve the promise with the ObjectId
         })
         .catch((error) => {
           console.error("Error inserting data:", error);
@@ -55,6 +56,7 @@ module.exports = {
         });
     });
   },
+  
 
   //These are the products which are lost
   GetItems: () => {
@@ -77,12 +79,13 @@ module.exports = {
         .collection(collections.Found_Collection)
         .insertOne(data)
         .then((response) => {
-          console.log(response.insertedId);
-          resolve(response.insertedId);
+          const insertedId = new ObjectId(response.insertedId); // Convert the inserted ID to ObjectId
+          console.log(insertedId);
+          resolve(insertedId); // Resolve the promise with the ObjectId
         })
-        .catch((err) => {
-          console.log("error : ", err);
-          reject(err);
+        .catch((error) => {
+          console.error("Error inserting data:", error);
+          reject(error); // Reject the promise if an error occurs
         });
     });
   },

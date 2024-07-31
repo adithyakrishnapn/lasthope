@@ -1,0 +1,42 @@
+<section class="lsfnpanel">
+    <div class="container">
+        <div class="row">
+            <div class="form">
+                <form action="/foundGov" method="post" enctype="multipart/form-data">
+                    <div id="center">
+                        <h2 style="color: white;">What did you found ?</h2>
+                        <label for="category">Select category:</label>
+                        <select name="category" id="category">
+                            <option value="Car">Car</option>
+                            <option value="Bike">Bike</option>
+                            <option value="Pet">Pet</option>
+                            <option value="Jewellery">Jewellery</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" placeholder="Specify Category" id="newcat">
+                        <button type="button" onclick="details(event)">Next</button>
+                    </div>
+                    <div id="detail">
+                        <h2 style="color: white;" id="headingdetails">Fill the details</h2>
+                        <label for="">Image</label><br>
+                        <input type="file" name="Image"><br>
+                        <label id="numberlabel">Aadhar Number : </label><br>
+                        <input type="text" name="number" id="aadharNumber" placeholder="" required><br>
+
+                        <label id="namelabel">Aadhar Holder Name : </label><br>
+                        <input type="text" name="name" id="aadharName" placeholder="" required><br>
+
+                        <label>Where did you lost : </label><br>
+                        <input type="text" name="lostPlace" placeholder="Last used/seen" required><br>
+
+                        <label>Tell something ? : </label><br>
+                        <textarea id="w3review" name="review" rows="4" cols="30" placeholder="Specify....."
+                            required></textarea><br>
+                        <br><button type="submit">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/javascripts/foundandwanted.js"></script>

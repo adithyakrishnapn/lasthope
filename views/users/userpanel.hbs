@@ -1,67 +1,67 @@
-<section class="panel">
-    <div class="dash">
-        <img id="profileImage" src="/images/user.jpg">
-        <h5 class="pt-2" style="text-align: center;">{{user.username}}</h5>
-        <hr>
+<div class="page-container">
+  <section class="panel">
+      <div class="dash">
+          <img id="profileImage" src="/images/user.jpg">
+          <h5 class="pt-2" style="text-align: center;">{{user.username}}</h5>
+          <hr>
 
-        <div class="dashButtons">
-            <button onclick="window.location.href='/userpanel/found'" class="btnLS">Found</button>
-            <button onClick="window.location.href='/userpanel/lost'" class="btnLS">Lost</button>
-            <button class="btnLS">Settings</button>
-            <button onclick="window.location.href='/userpanel/chatspanel'" class="btnLS">Chats</button>
-        </div>
-    </div>
+          <div class="dashButtons">
+              <button onclick="window.location.href='/userpanel/found'" class="btnLS">Found</button>
+              <button onclick="window.location.href='/userpanel/lost'" class="btnLS">Lost</button>
+              <button class="btnLS">Settings</button>
+              <button onclick="window.location.href='/userpanel/chatspanel'" class="btnLS">Chats</button>
+          </div>
+      </div>
 
+      <div class="detailedcontent">
+          <h4>{{nm}} Items That {{user.username}} Posted</h4>
 
-    <div class="detailedcontent" style="padding-top: 70px; padding-bottom: 70px;">
-        <h4>{{nm}} Items That {{user.username}} Posted</h4>
-
-        <table>
-            <tr>
-                <th>No</th>
-                <th>Category</th>
-                <th>Name</th>
-                <th>Id.No</th>
-                <th>Lost/Found Place</th>
-                <th>Review</th>
-                <th>status</th>
-            </tr>
-            {{#if lostItem}}
-            {{#each lostItem}}
-            <tr>
-                <td>{{math @index "+" 1}}</td>
-                <td>{{this.category}}</td>
-                <td>{{this.name}}</td>
-                <td>{{this.number}}</td>
-                <td>{{this.lostPlace}}</td>
-                <td>{{this.review}}</td>
-                <td style="color: green;">{{this.complete}}</td>
-                <td><a onclick="return confirm('Do you want to delete {{this.Name}} - {{this.category}}')"
-                        href="/userpanel/lostdel/{{this._id}}">Delete</a></td>
-                <td><a href="/userpanel/lostcomplete/{{this._id}}">Completed</a></td>
-            </tr>
-            {{/each}}
-            {{else if foundItem}}
-            {{#each foundItem}}
-            <tr>
-                <td>{{math @index "+" 1}}</td>
-                <td>{{this.category}}</td>
-                <td>{{this.name}}</td>
-                <td>{{this.number}}</td>
-                <td>{{this.findPlace}}</td>
-                <td>{{this.review}}</td>
-                <td style="color: green;">{{this.complete}}</td>
-                <td><a onclick="return confirm('Do you want to delete {{this.Name}} - {{this.category}}')"
-                        href="/userpanel/founddel/{{this._id}}">Delete</a></td>
-                <td><a href="/userpanel/foundcomplete/{{this._id}}">Completed</a></td>
-            </tr>
-            {{/each}}
-            {{else}}
-            <tr>
-                <td colspan="6">No data available</td>
-            </tr>
-            {{/if}}
-        </table>
-
-    </div>
-</section>
+          <table>
+              <tr>
+                  <th>No</th>
+                  <th>Category</th>
+                  <th>Name</th>
+                  <th>Id.No</th>
+                  <th>Lost/Found Place</th>
+                  <th>Review</th>
+                  <th>Status</th>
+              </tr>
+              {{#if lostItem}}
+              {{#each lostItem}}
+              <tr>
+                  <td>{{math @index "+" 1}}</td>
+                  <td>{{this.category}}</td>
+                  <td>{{this.name}}</td>
+                  <td>{{this.number}}</td>
+                  <td>{{this.lostPlace}}</td>
+                  <td>{{this.review}}</td>
+                  <td style="color: green;">{{this.complete}}</td>
+                  <td><a onclick="return confirm('Do you want to delete {{this.name}} - {{this.category}}')"
+                          href="/userpanel/lostdel/{{this._id}}">Delete</a></td>
+                  <td><a href="/userpanel/lostcomplete/{{this._id}}">Completed</a></td>
+              </tr>
+              {{/each}}
+              {{else if foundItem}}
+              {{#each foundItem}}
+              <tr>
+                  <td>{{math @index "+" 1}}</td>
+                  <td>{{this.category}}</td>
+                  <td>{{this.name}}</td>
+                  <td>{{this.number}}</td>
+                  <td>{{this.findPlace}}</td>
+                  <td>{{this.review}}</td>
+                  <td style="color: green;">{{this.complete}}</td>
+                  <td><a onclick="return confirm('Do you want to delete {{this.name}} - {{this.category}}')"
+                          href="/userpanel/founddel/{{this._id}}">Delete</a></td>
+                  <td><a href="/userpanel/foundcomplete/{{this._id}}">Completed</a></td>
+              </tr>
+              {{/each}}
+              {{else}}
+              <tr>
+                  <td colspan="9">No data available</td>
+              </tr>
+              {{/if}}
+          </table>
+      </div>
+  </section>
+</div>

@@ -11,6 +11,7 @@ const session = require('express-session');
 const http = require('http');
 const socketIo = require('socket.io');
 const { saveMessageToDatabase } = require('./helpers/chatHelper');
+var fileUpload = require('express-fileupload');
 
 const app = express();
 const server = http.createServer(app);
@@ -45,6 +46,11 @@ app.engine('hbs', hbs.engine({
     },
     eq: function (a, b) {  // Register the 'eq' helper
       return a === b;
+    },
+    not: (value) => !value,
+    or: function() {
+      const args = Array.prototype.slice.call(arguments, 0, -1);
+      return args.some(Boolean);
     }
   }
 }));
@@ -55,7 +61,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: "Key", cookie: { maxAge: 6000000 }, resave: false, saveUninitialized: false }));
+app.use(fileUpload());
+app.use(session({ secret: "Key", cookie: { maxAge: 6000000, secure: false }, resave: false, saveUninitialized: true }));
 
 // Database connection
 db.connect((err) => {

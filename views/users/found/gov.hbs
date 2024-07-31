@@ -1,8 +1,8 @@
-<section style="padding-top: 100px;">
-    <div class="container" style="padding-top: 100px;">
+<section class="lsfnpanel">
+    <div class="container">
         <div class="row">
             <div class="form">
-                <form action="/foundGov" method="post">
+                <form action="/foundGov" method="post" enctype="multipart/form-data">
                     <div id="center">
                         <h2 style="color: white;">What did you found ?</h2>
                         <label for="category">Select category:</label>
@@ -19,17 +19,20 @@
                     </div>
                     <div id="detail">
                         <h2 style="color: white;" id="headingdetails">Fill the details</h2>
+                        <label for="">Image</label><br>
+                        <input type="file" name="Image"><br>
                         <label id="numberlabel">Aadhar Number : </label><br>
-                        <input type="number" name="number" id="aadharNumber" placeholder=""><br>
+                        <input type="number" name="number" id="aadharNumber" placeholder="" required><br>
 
                         <label id="namelabel">Aadhar Holder Name : </label><br>
-                        <input type="text" name="name" id="aadharName" placeholder=""><br>
+                        <input type="text" name="name" id="aadharName" placeholder="" required><br>
 
                         <label>Where did you find it : </label><br>
-                        <input type="text" name="findPlace" placeholder="Place where you find it ?"><br>
+                        <input type="text" name="findPlace" placeholder="Place where you find it ?" required><br>
 
                         <label>Tell something ? : </label><br>
-                        <textarea id="w3review" name="review" rows="4" cols="50" placeholder="Specify....."></textarea><br>
+                        <textarea id="w3review" name="review" rows="4" cols="30" placeholder="Specify....."
+                            required></textarea><br>
                         <br><button type="submit">Post</button>
                     </div>
                 </form>

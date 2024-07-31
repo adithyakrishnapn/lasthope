@@ -5,6 +5,8 @@ const session = require("express-session");
 const { response } = require("../app");
 const { helpers } = require("handlebars");
 const ChatMessage = require("../config/chatMessage");
+const fs = require("fs");
+const path = require("path");
 
 //middleware for login
 const login = (req, res, next) => {
@@ -12,6 +14,22 @@ const login = (req, res, next) => {
     next();
   } else {
     req.session.formData = req.body;
+
+    if(req.files && req.files.Image){
+      req.session.ImageSave = req.files.Image.name;
+      let name = req.files.Image.name;
+      let image = req.files.Image;
+      image.mv("./public/temp/" + name + ".jpg", (err, done) => {
+        if (!err) {
+          console.log("successfully images moved");
+        } else {
+          console.log(err);
+        }
+      });
+    }else{
+      console.log("No image file found");
+    }
+
     res.redirect("/signIn");
   }
 };
@@ -28,7 +46,7 @@ const loginChat = (req, res, next) => {
 /* GET home page. */
 router.get("/", function (req, res, next) {
   let user = req.session.user;
-  res.render("users/index", { user, title: "Express", main: true });
+  res.render("users/index", { user, title: "Lasthope", main: true });
 });
 
 router.get("/lostSomething", (req, res) => {
@@ -51,6 +69,15 @@ router.get("/other", (req, res) => {
     user,
     title: "Select Details",
     ls: true,
+  });
+});
+
+router.get("/otherfound", (req, res) => {
+  let user = req.session.user;
+  res.render("users/found/otherfound", {
+    user,
+    title: "Select Details",
+    fs: true,
   });
 });
 
@@ -86,11 +113,57 @@ router.post("/signup", (req, res) => {
 
       // Insert the form data along with the email into the database
       helperFunction(detailsToSave)
-        .then(() => {
-          console.log("Data inserted successfully");
+      .then((id) => {
+        
+
+        if(req.session.ImageSave){
+          let imageName = req.session.ImageSave;
+        
+          if (!imageName) {
+            console.log("No image name found in session.");
+            return res.status(400).send("No image to move.");
+          }
+        
+          // Define paths
+          const tempPath = path.join(__dirname, "..", "public", "temp", `${imageName}.jpg`);
+          const finalPath = path.join(__dirname, "..", "public", "product-images", `${id}.jpg`);
+        
+          // Log paths for debugging
+          console.log("Temp Path:", tempPath);
+          console.log("Final Path:", finalPath);
+        
+          // Check if the source file exists
+          if (!fs.existsSync(tempPath)) {
+            console.log("Source file does not exist at:", tempPath);
+            return res.status(404).send("Source file not found.");
+          }
+        
+          // Ensure the product-images directory exists
+          const productImagesDir = path.dirname(finalPath);
+          if (!fs.existsSync(productImagesDir)) {
+            fs.mkdirSync(productImagesDir, { recursive: true });
+          }
+        
+          // Move the image
+          fs.rename(tempPath, finalPath, (err) => {
+            if (err) {
+              console.log("Error moving image:", err);
+              return res.status(500).send("Failed to move image.");
+            }
+            console.log("Image moved successfully to", finalPath);
+            
+            // Clean up and respond
+            req.session.formData = null; // Clear the formData from session after saving
+            req.session.ImageSave = null;
+            res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+          });
+        }else{
+          console.log("No iage found so Inserting Data with default Image");
           req.session.formData = null; // Clear the formData from session after saving
-          res.redirect("/signIn"); // Redirect to home or another appropriate route after successful insertion
-        })
+          res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+        }
+
+      })
         .catch((error) => {
           console.error("Error inserting data: ", error);
           res.status(500).send("Failed to insert form data");
@@ -140,11 +213,57 @@ router.post("/login", (req, res) => {
 
           // Insert the form data along with the email into the database
           helperFunction(detailsToSave)
-            .then(() => {
-              console.log("Data inserted successfully");
+          .then((id) => {
+        
+
+            if(req.session.ImageSave){
+              let imageName = req.session.ImageSave;
+            
+              if (!imageName) {
+                console.log("No image name found in session.");
+                return res.status(400).send("No image to move.");
+              }
+            
+              // Define paths
+              const tempPath = path.join(__dirname, "..", "public", "temp", `${imageName}.jpg`);
+              const finalPath = path.join(__dirname, "..", "public", "product-images", `${id}.jpg`);
+            
+              // Log paths for debugging
+              console.log("Temp Path:", tempPath);
+              console.log("Final Path:", finalPath);
+            
+              // Check if the source file exists
+              if (!fs.existsSync(tempPath)) {
+                console.log("Source file does not exist at:", tempPath);
+                return res.status(404).send("Source file not found.");
+              }
+            
+              // Ensure the product-images directory exists
+              const productImagesDir = path.dirname(finalPath);
+              if (!fs.existsSync(productImagesDir)) {
+                fs.mkdirSync(productImagesDir, { recursive: true });
+              }
+            
+              // Move the image
+              fs.rename(tempPath, finalPath, (err) => {
+                if (err) {
+                  console.log("Error moving image:", err);
+                  return res.status(500).send("Failed to move image.");
+                }
+                console.log("Image moved successfully to", finalPath);
+                
+                // Clean up and respond
+                req.session.formData = null; // Clear the formData from session after saving
+                req.session.ImageSave = null;
+                res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+              });
+            }else{
+              console.log("No iage found so Inserting Data with default Image");
               req.session.formData = null; // Clear the formData from session after saving
               res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
-            })
+            }
+    
+          })
             .catch((error) => {
               console.error("Error inserting data: ", error);
               res.status(500).send("Failed to insert form data");
@@ -179,8 +298,20 @@ router.post("/submitGov", login, (req, res, next) => {
     ...req.body, // Spread syntax to copy all properties from req.body into the new object
   };
 
-  userhelper.AddDetails(details).then((response) => {
-    console.log(response);
+  userhelper.AddDetails(details).then((id) => {
+    console.log(id);
+    if(req.files && req.files.Image){
+      let image = req.files.Image;
+      image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
+        if (!err) {
+          console.log("successfully images moved");
+        } else {
+          console.log(err);
+        }
+      });
+    }else{
+      console.log("No Image found Broooo");
+    }
     res.redirect("/userpanel");
   });
 });
@@ -200,13 +331,14 @@ router.get("/views", async (req, res) => {
       userhelper.GetPlace(),
     ]);
 
-    console.log("Fetched categories:", categories);
     res.render("users/view", {
       user,
       title: "View",
       product,
       categories,
       place,
+      selectedPlace: '',
+      selectedCategory: ''
     });
   } catch (error) {
     console.error("Error fetching data: ", error);
@@ -226,7 +358,6 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetPlace(),
       ]);
 
-      console.log("Fetched categories:", categories);
       res.render("users/view", {
         title: "View",
         product,
@@ -234,6 +365,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: '',
+        selectedCategory: ''
       });
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -247,7 +380,6 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetPlaceFound(),
       ]);
 
-      console.log("Fetched categories:", categories);
       res.render("users/view", {
         title: "View",
         product: [],
@@ -255,6 +387,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: '',
+        selectedCategory: ''
       });
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -277,6 +411,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: req.query.fplace,
+        selectedCategory: ''
       });
     } else if (req.query.fplace === "") {
       const [found, categories, place] = await Promise.all([
@@ -290,6 +426,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: '',
+        selectedCategory: req.query.fcategories
       });
     } else {
       const [found, categories, place] = await Promise.all([
@@ -303,6 +441,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: req.query.fplace,
+        selectedCategory: req.query.fcategories
       });
     }
   } else if (check === "check4") {
@@ -322,6 +462,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: req.query.fplace,
+        selectedCategory: ''
       });
     } else if (req.query.fplace === "") {
       const [product, categories, place] = await Promise.all([
@@ -335,6 +477,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: '',
+        selectedCategory: req.query.fcategories
       });
     } else {
       const [product, categories, place] = await Promise.all([
@@ -348,12 +492,15 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
+        selectedPlace: req.query.fplace,
+        selectedCategory: req.query.fcategories
       });
     }
   } else {
     res.send("No data to show");
   }
 });
+
 
 router.get("/foundsomething", (req, res) => {
   let user = req.session.user;
@@ -379,8 +526,20 @@ router.post("/foundGov", login, (req, res) => {
     ...req.body,
   };
 
-  userhelper.FoundItems(details).then((response) => {
-    console.log(response);
+  userhelper.FoundItems(details).then((id) => {
+    console.log(id);
+    if(req.files && req.files.Image){
+      let image = req.files.Image;
+      image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
+        if (!err) {
+          console.log("successfully images moved");
+        } else {
+          console.log(err);
+        }
+      });
+    }else{
+      console.log("No Image found Broooo");
+    }
     res.redirect("/userpanel");
   });
 });
@@ -394,7 +553,7 @@ router.get("/userpanel", login, (req, res) => {
   userhelper.UserDetails(mail).then((lostItem) => {
     console.log("fetched");
 
-    res.render("users/userpanel", { title: "User", user, lostItem, nm });
+    res.render("users/userpanel", { title: "User", user, lostItem, nm, nofooter :true });
   });
 });
 
@@ -404,7 +563,7 @@ router.get("/userpanel/lost", login, (req, res, next) => {
     let nm = "Lost";
     userhelper.UserDetails(req.session.mail).then((lostItem) => {
       console.log("Fetched Lost Items");
-      res.render("users/userpanel", { title: "User", lostItem, user, nm }); // Pass foundItem to the view
+      res.render("users/userpanel", { title: "User", lostItem, user, nm, nofooter :true }); // Pass foundItem to the view
     }); // Ensure the function name matches your helper method
   } catch (err) {
     next(err); // Pass the error to the error handler
@@ -417,7 +576,7 @@ router.get("/userpanel/found", login, (req, res, next) => {
     let nm = "found";
     userhelper.ProdDetails(req.session.mail).then((foundItem) => {
       console.log("Fetched founded Items");
-      res.render("users/userpanel", { title: "User", foundItem, user, nm }); // Pass foundItem to the view
+      res.render("users/userpanel", { title: "User", foundItem, user, nm ,nofooter :true}); // Pass foundItem to the view
     }); // Ensure the function name matches your helper method
   } catch (err) {
     next(err); // Pass the error to the error handler
@@ -428,63 +587,60 @@ router.get("/userpanel/chatspanel", login, async (req, res, next) => {
   let user = req.session.user;
   let mail = req.session.mail;
   try {
-    const messages = await userhelper.ShowMessagesId(mail,user.username);
+    const messages = await userhelper.ShowMessagesId(mail, user.username);
     console.log(messages);
-    res.render("users/chatspanel", { title: "Chats", user, messages });
+    res.render("users/chatspanel", { title: "Chats", user, messages, nofooter :true });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "An error occurred" }); // Send an error response in case of failure
   }
 });
 
-
-router.get("/userpanel/founddel/:id", (req,res,next)=>{
+router.get("/userpanel/founddel/:id", (req, res, next) => {
   let productId = req.params.id;
   try {
     userhelper.DeleteMessages(productId);
     userhelper.FoundMessages(productId);
-    res.redirect('/userpanel/found');
+    res.redirect("/userpanel/found");
   } catch (error) {
-    next(error);  // Handle errors appropriately
+    next(error); // Handle errors appropriately
   }
-})
+});
 
-router.get("/userpanel/Lostdel/:id", (req,res,next)=>{
+router.get("/userpanel/Lostdel/:id", (req, res, next) => {
   let productId = req.params.id;
   try {
     userhelper.DeleteMessages(productId);
     userhelper.LostMessages(productId);
-    res.redirect('/userpanel/lost');
+    res.redirect("/userpanel/lost");
   } catch (error) {
-    next(error);  // Handle errors appropriately
+    next(error); // Handle errors appropriately
   }
-})
+});
 
-
-router.get("/userpanel/lostcomplete/:id", (req,res,next)=>{
+router.get("/userpanel/lostcomplete/:id", (req, res, next) => {
   let productId = req.params.id;
   try {
     userhelper.updateMessageLost(productId);
     const log = userhelper.GetLostById(productId);
     console.log(log);
-    res.redirect('/userpanel/lost');
+    res.redirect("/userpanel/lost");
   } catch (error) {
-    next(error);  // Handle errors appropriately
+    next(error); // Handle errors appropriately
   }
-})
+});
 
-router.get("/userpanel/foundcomplete/:id", (req,res,next)=>{
+router.get("/userpanel/foundcomplete/:id", (req, res, next) => {
   let productId = req.params.id;
   try {
     userhelper.updateMessageFound(productId);
     const log = userhelper.GetfoundById(productId);
     console.log(log);
-    res.redirect('/userpanel/found');
+    res.redirect("/userpanel/found");
   } catch (error) {
-    next(error);  // Handle errors appropriately
+    next(error); // Handle errors appropriately
   }
-})
-
+});
 
 router.get("/view-products/found:id", async (req, res, next) => {
   try {
@@ -512,7 +668,7 @@ router.get("/view-products/product:id", async (req, res, next) => {
 
 // In your routes file
 // Fetch messages for a given product ID
-router.get('/chat/found:id', loginChat, async (req, res, next) => {
+router.get("/chat/found:id", loginChat, async (req, res, next) => {
   try {
     const productId = req.params.id;
     const foundItem = await userhelper.GetfoundById(productId);
@@ -527,9 +683,14 @@ router.get('/chat/found:id', loginChat, async (req, res, next) => {
 
       if (senders.length > 0 && senders[0].sendermail) {
         const sendermail = senders[0].sendermail;
-        messages = await userhelper.ShowMessages(sendermail, productId, receivermail, category);
+        messages = await userhelper.ShowMessages(
+          sendermail,
+          productId,
+          receivermail,
+          category
+        );
 
-        res.render('users/chat', {
+        res.render("users/chat", {
           title: "Chat",
           foundItem,
           userSend: true,
@@ -537,23 +698,28 @@ router.get('/chat/found:id', loginChat, async (req, res, next) => {
           receivermail,
           category,
           sendermail,
-          user
+          user,
         });
       } else {
-        throw new Error('Sender email not found');
+        throw new Error("Sender email not found");
       }
     } else {
-      messages = await userhelper.ShowMessages(user.mail, productId, receivermail, category);
+      messages = await userhelper.ShowMessages(
+        user.mail,
+        productId,
+        receivermail,
+        category
+      );
       console.log("messages", messages);
 
-      res.render('users/chat', {
+      res.render("users/chat", {
         title: "Chat",
         foundItem,
         user,
         messages,
         receivermail,
         category,
-        sendermail: user.mail
+        sendermail: user.mail,
       });
     }
   } catch (err) {
@@ -561,7 +727,7 @@ router.get('/chat/found:id', loginChat, async (req, res, next) => {
   }
 });
 
-router.get('/chat/product:id', loginChat, async (req, res, next) => {
+router.get("/chat/product:id", loginChat, async (req, res, next) => {
   try {
     const productId = req.params.id;
     const lostItem = await userhelper.GetLostById(productId);
@@ -576,9 +742,14 @@ router.get('/chat/product:id', loginChat, async (req, res, next) => {
 
       if (senders.length > 0 && senders[0].sendermail) {
         const sendermail = senders[0].sendermail;
-        messages = await userhelper.ShowMessages(sendermail, productId, receivermail, category);
+        messages = await userhelper.ShowMessages(
+          sendermail,
+          productId,
+          receivermail,
+          category
+        );
 
-        res.render('users/chat', {
+        res.render("users/chat", {
           title: "Chat",
           lostItem,
           userSend: true,
@@ -586,29 +757,33 @@ router.get('/chat/product:id', loginChat, async (req, res, next) => {
           receivermail,
           category,
           sendermail,
-          user
+          user,
         });
       } else {
-        throw new Error('Sender email not found');
+        throw new Error("Sender email not found");
       }
     } else {
-      messages = await userhelper.ShowMessages(user.mail, productId, receivermail, category);
+      messages = await userhelper.ShowMessages(
+        user.mail,
+        productId,
+        receivermail,
+        category
+      );
       console.log("messages", messages);
 
-      res.render('users/chat', {
+      res.render("users/chat", {
         title: "Chat",
         lostItem,
         user,
         messages,
         receivermail,
         category,
-        sendermail: user.mail
+        sendermail: user.mail,
       });
     }
   } catch (err) {
     next(err);
   }
 });
-
 
 module.exports = router;

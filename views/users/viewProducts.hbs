@@ -9,7 +9,8 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
-                <img src="https://via.placeholder.com/500" alt="Product Image" class="product-image">
+                <img src="/product-images/{{foundItem._id}}.jpg" class="imgsc" alt="{{foundItem.category}}"
+                    onerror="this.onerror=null;this.src='/images/google-docs.png';">
             </div>
             <div class="col-md-6" style="padding-top: 10%;">
                 <h1 class="product-name">{{foundItem.category}}</h1>
@@ -38,14 +39,16 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
-                <img src="https://via.placeholder.com/500" alt="Product Image" class="product-image">
+                <img src="/product-images/{{lostItem._id}}.jpg" class="imgsc" alt="{{lostItem.category}}"
+                    onerror="this.onerror=null;this.src='/images/google-docs.png';">
+
             </div>
             <div class="col-md-6" style="padding-top: 10%;">
                 <h1 class="product-name">{{lostItem.category}}</h1>
                 <div class="price">{{lostItem.number}}</div>
                 <div class="price">{{lostItem.name}}</div>
                 <p class="product-description">
-                    {{lostItem.w3review}}
+                    {{lostItem.review}}
                 </p>
                 {{#if lostItem.complete}}
                 <center>

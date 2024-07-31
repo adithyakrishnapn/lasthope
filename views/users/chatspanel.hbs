@@ -1,4 +1,4 @@
-<section>
+<section class="chatspanel">
     <div class="dash">
         <img id="profileImage" src="/images/user.jpg">
         <h5 class="pt-2" style="text-align: center;">{{user.username}}</h5>
@@ -21,18 +21,19 @@
                     <h3>Chats</h3>
                     {{#if messages}}
                     {{#each messages}}
-                        <div class="item">
-                            <img src="/images/product1.jpg" alt="Product 1">
-                            <div class="details">
-                                <h6 onclick="window.location.href='/chat/product{{this._id}}'">{{this.username}}</h6>
-                                <p style="font-weight: 600;">{{this.message}}</p>
-                                <p>{{this.timestamp}}</p>
-                            </div>
+                    <div class="item">
+                        <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}"
+                            onerror="this.onerror=null;this.src='/images/google-docs.png';">
+                        <div class="details">
+                            <h5 onclick="window.location.href='/chat/product{{this._id}}'">{{this.username}}</h5>
+                            <p style="font-weight: 600;">{{this.message}}</p>
+                            <p>{{this.timestamp}}</p>
                         </div>
-                        {{/each}}
-                        {{else}}
-                        <p>No products</p>
-                        {{/if}}
+                    </div>
+                    {{/each}}
+                    {{else}}
+                    <p>No products</p>
+                    {{/if}}
 
                 </div>
             </div>

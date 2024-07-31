@@ -1,80 +1,72 @@
-<section style="padding-top: 100px;">
-  <div class="container">
-    <button onclick="window.location.href='/views/check1'">Lost Items</button>
-    <button onclick="window.location.href='/views/check2'">Found Items</button>
-  </div>
-  <hr>
+<section class="lsfnpanel" style="padding-top: 100px;">
+  <hr style="color: white;">
   {{#if found}}
-  <div style="display: flex;">
+  <div style="display: flex; color: white;">
     <h6>Topic :</h6>
     <h6 style="font-weight: 500;">Found Items</h6>
   </div>
-  <hr>
-  <div class="colm">
+  <hr style="color: white;">
+  <div class="colm" style="color: white;">
+    <button onclick="window.location.href='/views/check1'">Lost Items</button>
+    <button onclick="window.location.href='/views/check2'">Found Items</button>
     <h6 onclick="foundfilter()">Filter</h6>
-    <h6 onclick="foundsort()">Sort</h6>
   </div>
   <div class="filter" id="foundfilter">
     <form action="/views/check3" method="get">
       <p>Place :</p>
       <select name="fplace">
-        <option></option>
+        <option id="mainoption">{{selectedPlace}}</option>
         {{#each place}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}" {{#if (eq this ../selectedPlace)}}selected{{/if}}>{{this}}</option>
         {{/each}}
-      </select><br><br>
+      </select>
+         <a href="/views">Clear</a><br><br>
       <p>Category :</p>
       <select name="fcategories">
-        <option></option>
+        <option>{{selectedCategory}}</option>
         {{#each categories}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}" {{#if (eq this ../selectedCategory)}}selected{{/if}}>{{this}}</option>
         {{/each}}
-      </select><br><br>
+      </select>
+         <a href="/views">Clear</a><br><br>
       <p>Date :</p><br>
       <input type="submit" value="set">
     </form>
   </div>
-  <div class="sort" id="foundsort">
-    <p>Newest first</p>
-    <p>Ascending</p>
-    <p>Descending</p>
-  </div>
   {{/if}}
 
   {{#if product}}
-  <div style="display: flex;">
+  <div style="display: flex; color: white;">
     <h6>Topic :</h6>
     <h6 style="font-weight: 500;">Lost Items</h6>
   </div>
-  <hr>
+  <hr style="color: white;">
   <div class="colm">
-    <h6 onclick="lostfilter()">Filter</h6>
-    <h6 onclick="lostsort()">Sort</h6>
+    <button onclick="window.location.href='/views/check1'">Lost Items</button>
+    <button onclick="window.location.href='/views/check2'">Found Items</button>
+    <h6 onclick="lostfilter()" style="color: white;">Filter</h6>
   </div>
   <div class="filter" id="lostfilter">
     <form action="/views/check4" method="get">
       <p>Place :</p>
       <select name="fplace">
-        <option></option>
+        <option>{{selectedPlace}}</option>
         {{#each place}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}" {{#if (eq this ../selectedPlace)}}selected{{/if}}>{{this}}</option>
         {{/each}}
-      </select><br><br>
+      </select>
+         <a href="/views">Clear</a><br><br>
       <p>Category :</p>
       <select name="fcategories">
-        <option></option>
+        <option>{{selectedCategory}}</option>
         {{#each categories}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}" {{#if (eq this ../selectedCategory)}}selected{{/if}}>{{this}}</option>
         {{/each}}
-      </select><br><br>
+      </select>
+        <a href="/views">Clear</a><br><br>
       <p>Date :</p><br>
       <input type="submit" value="set">
     </form>
-  </div>
-  <div class="sort" id="lostsort">
-    <p>Newest first</p>
-    <p>Ascending</p>
-    <p>Descending</p>
   </div>
   {{/if}}
   <hr>
@@ -86,14 +78,24 @@
       {{#if this.complete}}
       <div class="col-md-4 pt-3 pb-3">
         <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
-          <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24);">
-            <img src="/product-images/{{this._id}}.jpg" alt="...">
-            <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
-              <strike><h5 class="card-title">{{this.category}}</h5></strike>
-              <strike><h6>Card no: {{this.number}}</h6></strike>
-              <strike><h6>Card Holder name: {{this.name}}</h6></strike>
-              <strike><h6>Lost: {{this.lostPlace}}</h6></strike>
-              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;"><h1>ACCOMPLISHED</h1></div>
+          <div class="card p-3" style="width: 100%; background-color: rgba(255, 55, 55, 0.24);">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
+            <div class="card-body" style="display: flex; flex-direction: column; align-items: center; color:white">
+              <strike>
+                <h5 class="card-title">{{this.category}}</h5>
+              </strike>
+              <strike>
+                <h6>Card no: {{this.number}}</h6>
+              </strike>
+              <strike>
+                <h6>Card Holder name: {{this.name}}</h6>
+              </strike>
+              <strike>
+                <h6>Lost: {{this.lostPlace}}</h6>
+              </strike>
+              <div class="tag" style="background-color: orange; margin-top: 5px; border-radius: 0.2cm; padding-left: 5px;padding-right: 5px;">
+                <h4>ACCOMPLISHED</h4>
+              </div>
             </div>
           </div>
         </div>
@@ -102,7 +104,7 @@
 
       <div class="col-md-4 pt-3 pb-3">
         <div class="card p-3" style="width: 100%;">
-          <img src="/product-images/{{this._id}}.jpg" alt="...">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
             <h6>Card no : {{this.number}}</h6>
@@ -125,13 +127,23 @@
       <div class="col-md-4 pt-3 pb-3">
         <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
           <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24);">
-            <img src="/product-images/{{this._id}}.jpg" alt="...">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
             <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
-              <strike><h5 class="card-title">{{this.category}}</h5></strike>
-              <strike><h6>Card no: {{this.number}}</h6></strike>
-              <strike><h6>Card Holder name: {{this.name}}</h6></strike>
-              <strike><h6>Lost: {{this.lostPlace}}</h6></strike>
-              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;"><h1>ACCOMPLISHED</h1></div>
+              <strike>
+                <h5 class="card-title">{{this.category}}</h5>
+              </strike>
+              <strike>
+                <h6>Card no: {{this.number}}</h6>
+              </strike>
+              <strike>
+                <h6>Card Holder name: {{this.name}}</h6>
+              </strike>
+              <strike>
+                <h6>Lost: {{this.lostPlace}}</h6>
+              </strike>
+              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;">
+                <h1>ACCOMPLISHED</h1>
+              </div>
             </div>
           </div>
         </div>
@@ -140,13 +152,13 @@
 
       <div class="col-md-4 pt-3 pb-3">
         <div class="card p-3" style="width: 100%;">
-          <img src="/product-images/{{this._id}}.jpg" alt="...">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
             <h6>Card no : {{this.number}}</h6>
             <h6>Card Holder name : {{this.name}}</h6>
             <h6>Lost : {{this.lostPlace}}</h6>
-            <a href="/view-products/found{{this._id}}" class="btn btn-primary">Details</a>
+            <a href="/view-products/product{{this._id}}" class="btn btn-primary">Details</a>
           </div>
 
         </div>
@@ -156,7 +168,4 @@
       {{/if}}
     </div>
   </div>
-
-
-
 </section>
