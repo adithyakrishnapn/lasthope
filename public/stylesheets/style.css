@@ -355,7 +355,8 @@ tr:nth-child(even) {
   text-align: center;
   padding: 40px;
   width: 100%;
-  background-color: rgb(199, 199, 199);
+  background-color: rgb(61, 61, 61);
+  color: white;
 }
 
 
@@ -371,6 +372,10 @@ tr:nth-child(even) {
 }
 #foundsort{
   display: none;
+}
+
+.filter select{
+  width: 200px;
 }
 
 
@@ -448,8 +453,8 @@ tr:nth-child(even) {
   height: 100%;
 }
 .imgsc {
-  width: 100%;
-  height: 200px; /* Adjust height as needed */
+  justify-content: stretch;
+  height: 400px; /* Adjust height as needed */
   object-fit: cover; /* Maintain aspect ratio and cover the entire area */
 }
 .card-body {
@@ -486,3 +491,5 @@ footer h5{
   cursor: pointer;
 }
 /*Chatspane*/
+
+

@@ -20,7 +20,7 @@
         <option value="{{this}}" {{#if (eq this ../selectedPlace)}}selected{{/if}}>{{this}}</option>
         {{/each}}
       </select>
-         <a href="/views">Clear</a><br><br>
+      <a href="/views">Clear</a><br><br>
       <p>Category :</p>
       <select name="fcategories">
         <option>{{selectedCategory}}</option>
@@ -28,7 +28,7 @@
         <option value="{{this}}" {{#if (eq this ../selectedCategory)}}selected{{/if}}>{{this}}</option>
         {{/each}}
       </select>
-         <a href="/views">Clear</a><br><br>
+      <a href="/views">Clear</a><br><br>
       <p>Date :</p><br>
       <input type="submit" value="set">
     </form>
@@ -55,7 +55,7 @@
         <option value="{{this}}" {{#if (eq this ../selectedPlace)}}selected{{/if}}>{{this}}</option>
         {{/each}}
       </select>
-         <a href="/views">Clear</a><br><br>
+      <a href="/views">Clear</a><br><br>
       <p>Category :</p>
       <select name="fcategories">
         <option>{{selectedCategory}}</option>
@@ -63,7 +63,7 @@
         <option value="{{this}}" {{#if (eq this ../selectedCategory)}}selected{{/if}}>{{this}}</option>
         {{/each}}
       </select>
-        <a href="/views">Clear</a><br><br>
+      <a href="/views">Clear</a><br><br>
       <p>Date :</p><br>
       <input type="submit" value="set">
     </form>
@@ -74,12 +74,12 @@
     <div class="row">
       {{#if product.length}}
       {{#each product}}
-
       {{#if this.complete}}
       <div class="col-md-4 pt-3 pb-3">
         <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
           <div class="card p-3" style="width: 100%; background-color: rgba(255, 55, 55, 0.24);">
-          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
+            <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}"
+              onerror="this.onerror=null;this.src='/images/google-docs.png';">
             <div class="card-body" style="display: flex; flex-direction: column; align-items: center; color:white">
               <strike>
                 <h5 class="card-title">{{this.category}}</h5>
@@ -93,7 +93,8 @@
               <strike>
                 <h6>Lost: {{this.lostPlace}}</h6>
               </strike>
-              <div class="tag" style="background-color: orange; margin-top: 5px; border-radius: 0.2cm; padding-left: 5px;padding-right: 5px;">
+              <div class="tag"
+                style="background-color: orange; margin-top: 5px; border-radius: 0.2cm; padding-left: 5px;padding-right: 5px;">
                 <h4>ACCOMPLISHED</h4>
               </div>
             </div>
@@ -101,10 +102,10 @@
         </div>
       </div>
       {{else}}
-
       <div class="col-md-4 pt-3 pb-3">
         <div class="card p-3" style="width: 100%;">
-          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}"
+            onerror="this.onerror=null;this.src='/images/google-docs.png';">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
             <h6>Card no : {{this.number}}</h6>
@@ -112,7 +113,6 @@
             <h6>Lost : {{this.lostPlace}}</h6>
             <a href="/view-products/product{{this._id}}" class="btn btn-primary">Details</a>
           </div>
-
         </div>
       </div>
       {{/if}}
@@ -126,8 +126,9 @@
       {{#if this.complete}}
       <div class="col-md-4 pt-3 pb-3">
         <div class="complete" style="background-color: rgba(255, 0, 0, 0.24); width: 100%; height: 100%;">
-          <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24);">
-          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
+          <div class="card p-3" style="width: 100%; background-color: rgba(255, 0, 0, 0.24); color: white;">
+            <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}"
+              onerror="this.onerror=null;this.src='/images/google-docs.png';">
             <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
               <strike>
                 <h5 class="card-title">{{this.category}}</h5>
@@ -141,7 +142,7 @@
               <strike>
                 <h6>Lost: {{this.lostPlace}}</h6>
               </strike>
-              <div class="tag" style="padding: 5px; background-color: orange; margin-top: 10px;">
+              <div class="tag" style="background-color: orange; margin-top: 5px; border-radius: 0.2cm; padding-left: 5px;padding-right: 5px;">
                 <h1>ACCOMPLISHED</h1>
               </div>
             </div>
@@ -149,23 +150,28 @@
         </div>
       </div>
       {{else}}
-
       <div class="col-md-4 pt-3 pb-3">
         <div class="card p-3" style="width: 100%;">
-          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}" onerror="this.onerror=null;this.src='/images/google-docs.png';">
+          <img src="/product-images/{{this._id}}.jpg" class="imgsc" alt="{{this.category}}"
+            onerror="this.onerror=null;this.src='/images/google-docs.png';">
           <div class="card-body">
             <h5 class="card-title">{{this.category}}</h5>
             <h6>Card no : {{this.number}}</h6>
             <h6>Card Holder name : {{this.name}}</h6>
             <h6>Lost : {{this.lostPlace}}</h6>
-            <a href="/view-products/product{{this._id}}" class="btn btn-primary">Details</a>
+            <a href="/view-products/found{{this._id}}" class="btn btn-primary">Details</a>
           </div>
-
         </div>
       </div>
       {{/if}}
       {{/each}}
       {{/if}}
     </div>
+
+    {{!-- Display "No data found" only if both `product` and `found` arrays are empty --}}
+    {{#unless (or product.length found.length)}}
+    <h1 style="color: white;">No data found <a href="javascript:history.back()">Go Back</a></h1>
+    {{/unless}}
+
   </div>
 </section>

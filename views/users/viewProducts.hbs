@@ -1,22 +1,22 @@
-<section style="padding-top: 70px; padding-bottom: 70px;">
+<section style="padding-top: 70px; padding-bottom: 70px;background-color: rgb(74, 74, 74);">
     {{#if foundItem}}
     <hr>
     <div style="display: flex;">
-        <h6>Topic :</h6>
-        <h6 style="font-weight: 500;">Found Items</h6>
+        <h6 style="color: white;">Topic :</h6>
+        <h6 style="font-weight: 500; color:white">Found Items</h6>
     </div>
     <hr>
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
-                <img src="/product-images/{{foundItem._id}}.jpg" class="imgsc" alt="{{foundItem.category}}"
+                <img src="/product-images/{{foundItem._id}}.jpg" width="200px" alt="{{foundItem.category}}"
                     onerror="this.onerror=null;this.src='/images/google-docs.png';">
             </div>
             <div class="col-md-6" style="padding-top: 10%;">
-                <h1 class="product-name">{{foundItem.category}}</h1>
+                <h1 class="product-name" style="color: white;">{{foundItem.category}}</h1>
                 <div class="price">{{foundItem.number}}</div>
                 <div class="price">{{foundItem.name}}</div>
-                <p class="product-description">
+                <p class="product-description" style="color: white;">
                     {{foundItem.review}}
                 </p>
                 {{#if foundItem.complete}}
@@ -32,22 +32,22 @@
     {{else if lostItem}}
     <hr>
     <div style="display: flex;">
-        <h6>Topic :</h6>
-        <h6 style="font-weight: 500;">Lost Items</h6>
+        <h6 style="color: white;">Topic :</h6>
+        <h6 style="font-weight: 500; color:white">Lost Items</h6>
     </div>
     <hr>
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
-                <img src="/product-images/{{lostItem._id}}.jpg" class="imgsc" alt="{{lostItem.category}}"
+                <img src="/product-images/{{lostItem._id}}.jpg" width="100%" alt="{{lostItem.category}}"
                     onerror="this.onerror=null;this.src='/images/google-docs.png';">
 
             </div>
             <div class="col-md-6" style="padding-top: 10%;">
-                <h1 class="product-name">{{lostItem.category}}</h1>
+                <h1 class="product-name" style="color: white;">{{lostItem.category}}</h1>
                 <div class="price">{{lostItem.number}}</div>
                 <div class="price">{{lostItem.name}}</div>
-                <p class="product-description">
+                <p class="product-description" style="color: white;">
                     {{lostItem.review}}
                 </p>
                 {{#if lostItem.complete}}

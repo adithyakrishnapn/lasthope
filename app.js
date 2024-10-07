@@ -62,7 +62,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
-app.use(session({ secret: "Key", cookie: { maxAge: 6000000, secure: false }, resave: false, saveUninitialized: true }));
+app.use(session({
+  secret :"Key",
+  cookie:{maxAge:60000000},
+  resave: false,
+  saveUninitialized: false,
+}));
 
 // Database connection
 db.connect((err) => {
@@ -117,3 +122,5 @@ io.on('connection', (socket) => {
 });
 
 module.exports = { app, server };
+
+// regex, ux, mask

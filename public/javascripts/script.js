@@ -56,17 +56,17 @@ function displayFunction() {
 //lost filter and sort
 function lostfilter(){
     let lostfilter = document.getElementById('lostfilter');
-    let lostsort = document.getElementById('lostsort');
+    //let lostsort = document.getElementById('lostsort');
 
     if(lostfilter.style.display === 'none' || lostfilter.style.display === ''){
-        lostsort.style.display = 'none';//incase its visible
+      //  lostsort.style.display = 'none';//incase its visible
         lostfilter.style.display = 'block';
     }else{
         lostfilter.style.display = 'none'
     }
 }
 
-function lostsort(){
+/**function lostsort(){
     let lostsort = document.getElementById('lostsort');
     let lostfilter = document.getElementById('lostfilter');
 
@@ -76,21 +76,21 @@ function lostsort(){
     }else{
         lostsort.style.display = 'none'
     }
-}
+}**/
 //found filter and sort
 function foundfilter(){
     let foundfilter = document.getElementById('foundfilter');
-    let foundsort = document.getElementById('foundsort');
+    //let foundsort = document.getElementById('foundsort');
 
     if(foundfilter.style.display === 'none' || foundfilter.style.display === ''){
-        foundsort.style.display = 'none' // incase if its visible
+        //foundsort.style.display = 'none' // incase if its visible
         foundfilter.style.display = 'block';
     }else{
         foundfilter.style.display = 'none'
     }
 }
 
-function foundsort(){
+/**function foundsort(){
     let foundsort = document.getElementById('foundsort');
     let foundfilter = document.getElementById('foundfilter');
 
@@ -100,4 +100,4 @@ function foundsort(){
     }else{
         foundsort.style.display = 'none'
     }
-}
+}**/

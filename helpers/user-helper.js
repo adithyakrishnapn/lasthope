@@ -40,6 +40,20 @@ module.exports = {
       }
     });
   },
+
+  fetchUser: () => {
+    return new Promise(async (resolve, reject) => {
+      let product = await db
+        .get()
+        .collection(collections.User_Collection)
+        .find()
+        .toArray()
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+
   AddDetails : (data) => {
     return new Promise((resolve, reject) => {
       db.get()

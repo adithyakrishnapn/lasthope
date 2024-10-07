@@ -7,7 +7,6 @@ const { helpers } = require("handlebars");
 const ChatMessage = require("../config/chatMessage");
 const fs = require("fs");
 const path = require("path");
-
 //middleware for login
 const login = (req, res, next) => {
   if (req.session.loggedIn) {
@@ -15,7 +14,7 @@ const login = (req, res, next) => {
   } else {
     req.session.formData = req.body;
 
-    if(req.files && req.files.Image){
+    if (req.files && req.files.Image) {
       req.session.ImageSave = req.files.Image.name;
       let name = req.files.Image.name;
       let image = req.files.Image;
@@ -26,7 +25,7 @@ const login = (req, res, next) => {
           console.log(err);
         }
       });
-    }else{
+    } else {
       console.log("No image file found");
     }
 
@@ -42,6 +41,37 @@ const loginChat = (req, res, next) => {
     res.redirect("/signIn");
   }
 };
+
+
+
+const mailcheck = async (req, res, next) => {
+  try {
+    // Fetch all user data
+    const fetchmail = await userhelper.fetchUser();
+    
+    // Log fetched data and request body for debugging
+    console.log("Fetched emails from database:", fetchmail);
+    console.log("Request body mail:", req.body.mail);
+    
+    // Check if the email already exists (case-insensitive)
+    const emailExists = fetchmail.some((user) => user.mail.toLowerCase() === req.body.mail.toLowerCase());
+    
+    if (emailExists) {
+      console.log("Email already exists:", req.body.mail);
+      res.redirect("/signup?error=email_exists"); 
+      
+    } else {
+      console.log("Email does not exist:", req.body.mail);
+      // Proceed to the next middleware or handler
+      next()
+    }
+  } catch (err) {
+    console.error("Error checking email:", err);
+    // Handle the error, e.g., by passing it to the next middleware
+  }
+};
+
+
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -86,103 +116,113 @@ router.get("/signIn", (req, res) => {
 });
 
 router.get("/signup", (req, res) => {
-  res.render("users/signup", { title: "Create Account", sp: true });
+  res.render("users/signup", { title: "Create Account", sp: true, error: req.query.error });
 });
 
-router.post("/signup", (req, res) => {
-  userhelper.DoSignUp(req.body).then((response) => {
-    console.log(req.body);
-    console.log(response);
-    req.session.loggedIn = true;
-    req.session.user = response.username;
-    req.session.mail = req.body.mail;
 
-    if (req.session.formData) {
-      // Append email to the formData before saving
-      const detailsToSave = {
-        ...req.session.formData,
-        email: req.body.mail,
-      };
+router.post("/signup", mailcheck,(req, res) => {
+    userhelper.DoSignUp(req.body).then((response) => {
+      console.log(req.body);
+      console.log(response);
+      req.session.loggedIn = true;
+      req.session.user = response.username;
+      req.session.mail = req.body.mail;
 
-      console.log(req.session.formData.category);
-      // Determine which helper function to use based on the form data or some identifier
-      const helperFunction =
-        req.session.formData.check === "found"
-          ? userhelper.FoundItems
-          : userhelper.AddDetails;
+      if (req.session.formData) {
+        // Append email to the formData before saving
+        const detailsToSave = {
+          ...req.session.formData,
+          email: req.body.mail,
+        };
 
-      // Insert the form data along with the email into the database
-      helperFunction(detailsToSave)
-      .then((id) => {
-        
+        console.log(req.session.formData.category);
+        // Determine which helper function to use based on the form data or some identifier
+        const helperFunction =
+          req.session.formData.check === "found"
+            ? userhelper.FoundItems
+            : userhelper.AddDetails;
 
-        if(req.session.ImageSave){
-          let imageName = req.session.ImageSave;
-        
-          if (!imageName) {
-            console.log("No image name found in session.");
-            return res.status(400).send("No image to move.");
-          }
-        
-          // Define paths
-          const tempPath = path.join(__dirname, "..", "public", "temp", `${imageName}.jpg`);
-          const finalPath = path.join(__dirname, "..", "public", "product-images", `${id}.jpg`);
-        
-          // Log paths for debugging
-          console.log("Temp Path:", tempPath);
-          console.log("Final Path:", finalPath);
-        
-          // Check if the source file exists
-          if (!fs.existsSync(tempPath)) {
-            console.log("Source file does not exist at:", tempPath);
-            return res.status(404).send("Source file not found.");
-          }
-        
-          // Ensure the product-images directory exists
-          const productImagesDir = path.dirname(finalPath);
-          if (!fs.existsSync(productImagesDir)) {
-            fs.mkdirSync(productImagesDir, { recursive: true });
-          }
-        
-          // Move the image
-          fs.rename(tempPath, finalPath, (err) => {
-            if (err) {
-              console.log("Error moving image:", err);
-              return res.status(500).send("Failed to move image.");
+        // Insert the form data along with the email into the database
+        helperFunction(detailsToSave)
+          .then((id) => {
+            if (req.session.ImageSave) {
+              let imageName = req.session.ImageSave;
+
+              if (!imageName) {
+                console.log("No image name found in session.");
+                return res.status(400).send("No image to move.");
+              }
+
+              // Define paths
+              const tempPath = path.join(
+                __dirname,
+                "..",
+                "public",
+                "temp",
+                `${imageName}.jpg`
+              );
+              const finalPath = path.join(
+                __dirname,
+                "..",
+                "public",
+                "product-images",
+                `${id}.jpg`
+              );
+
+              // Log paths for debugging
+              console.log("Temp Path:", tempPath);
+              console.log("Final Path:", finalPath);
+
+              // Check if the source file exists
+              if (!fs.existsSync(tempPath)) {
+                console.log("Source file does not exist at:", tempPath);
+                return res.status(404).send("Source file not found.");
+              }
+
+              // Ensure the product-images directory exists
+              const productImagesDir = path.dirname(finalPath);
+              if (!fs.existsSync(productImagesDir)) {
+                fs.mkdirSync(productImagesDir, { recursive: true });
+              }
+
+              // Move the image
+              fs.rename(tempPath, finalPath, (err) => {
+                if (err) {
+                  console.log("Error moving image:", err);
+                  return res.status(500).send("Failed to move image.");
+                }
+                console.log("Image moved successfully to", finalPath);
+
+                // Clean up and respond
+                req.session.formData = null; // Clear the formData from session after saving
+                req.session.ImageSave = null;
+                res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+              });
+            } else {
+              console.log("No iage found so Inserting Data with default Image");
+              req.session.formData = null; // Clear the formData from session after saving
+              res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
             }
-            console.log("Image moved successfully to", finalPath);
-            
-            // Clean up and respond
-            req.session.formData = null; // Clear the formData from session after saving
-            req.session.ImageSave = null;
-            res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+          })
+          .catch((error) => {
+            console.error("Error inserting data: ", error);
+            res.status(500).send("Failed to insert form data");
           });
-        }else{
-          console.log("No iage found so Inserting Data with default Image");
-          req.session.formData = null; // Clear the formData from session after saving
-          res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+      } else if (req.session.Chatid) {
+        const chatId = req.session.Chatid;
+        req.session.Chatid = null; // Clear Chat ID
+        // Adjust this condition based on your user model
+        if (response.user.isFound) {
+          res.redirect(`/chat/found${chatId}`);
+        } else {
+          res.redirect(`/chat/product${chatId}`);
         }
-
-      })
-        .catch((error) => {
-          console.error("Error inserting data: ", error);
-          res.status(500).send("Failed to insert form data");
-        });
-    } else if (req.session.Chatid) {
-      const chatId = req.session.Chatid;
-      req.session.Chatid = null; // Clear Chat ID
-      // Adjust this condition based on your user model
-      if (response.user.isFound) {
-        res.redirect(`/chat/found${chatId}`);
       } else {
-        res.redirect(`/chat/product${chatId}`);
+        console.log("Messed Up bro");
+        // No form data to process, redirect to home or another appropriate route
+        res.redirect("/");
       }
-    } else {
-      console.log("Messed Up bro");
-      // No form data to process, redirect to home or another appropriate route
-      res.redirect("/");
-    }
-  });
+    });
 });
 
 router.post("/login", (req, res) => {
@@ -213,57 +253,68 @@ router.post("/login", (req, res) => {
 
           // Insert the form data along with the email into the database
           helperFunction(detailsToSave)
-          .then((id) => {
-        
+            .then((id) => {
+              if (req.session.ImageSave) {
+                let imageName = req.session.ImageSave;
 
-            if(req.session.ImageSave){
-              let imageName = req.session.ImageSave;
-            
-              if (!imageName) {
-                console.log("No image name found in session.");
-                return res.status(400).send("No image to move.");
-              }
-            
-              // Define paths
-              const tempPath = path.join(__dirname, "..", "public", "temp", `${imageName}.jpg`);
-              const finalPath = path.join(__dirname, "..", "public", "product-images", `${id}.jpg`);
-            
-              // Log paths for debugging
-              console.log("Temp Path:", tempPath);
-              console.log("Final Path:", finalPath);
-            
-              // Check if the source file exists
-              if (!fs.existsSync(tempPath)) {
-                console.log("Source file does not exist at:", tempPath);
-                return res.status(404).send("Source file not found.");
-              }
-            
-              // Ensure the product-images directory exists
-              const productImagesDir = path.dirname(finalPath);
-              if (!fs.existsSync(productImagesDir)) {
-                fs.mkdirSync(productImagesDir, { recursive: true });
-              }
-            
-              // Move the image
-              fs.rename(tempPath, finalPath, (err) => {
-                if (err) {
-                  console.log("Error moving image:", err);
-                  return res.status(500).send("Failed to move image.");
+                if (!imageName) {
+                  console.log("No image name found in session.");
+                  return res.status(400).send("No image to move.");
                 }
-                console.log("Image moved successfully to", finalPath);
-                
-                // Clean up and respond
+
+                // Define paths
+                const tempPath = path.join(
+                  __dirname,
+                  "..",
+                  "public",
+                  "temp",
+                  `${imageName}.jpg`
+                );
+                const finalPath = path.join(
+                  __dirname,
+                  "..",
+                  "public",
+                  "product-images",
+                  `${id}.jpg`
+                );
+
+                // Log paths for debugging
+                console.log("Temp Path:", tempPath);
+                console.log("Final Path:", finalPath);
+
+                // Check if the source file exists
+                if (!fs.existsSync(tempPath)) {
+                  console.log("Source file does not exist at:", tempPath);
+                  return res.status(404).send("Source file not found.");
+                }
+
+                // Ensure the product-images directory exists
+                const productImagesDir = path.dirname(finalPath);
+                if (!fs.existsSync(productImagesDir)) {
+                  fs.mkdirSync(productImagesDir, { recursive: true });
+                }
+
+                // Move the image
+                fs.rename(tempPath, finalPath, (err) => {
+                  if (err) {
+                    console.log("Error moving image:", err);
+                    return res.status(500).send("Failed to move image.");
+                  }
+                  console.log("Image moved successfully to", finalPath);
+
+                  // Clean up and respond
+                  req.session.formData = null; // Clear the formData from session after saving
+                  req.session.ImageSave = null;
+                  res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
+                });
+              } else {
+                console.log(
+                  "No iage found so Inserting Data with default Image"
+                );
                 req.session.formData = null; // Clear the formData from session after saving
-                req.session.ImageSave = null;
                 res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
-              });
-            }else{
-              console.log("No iage found so Inserting Data with default Image");
-              req.session.formData = null; // Clear the formData from session after saving
-              res.redirect("/userpanel"); // Redirect to home or another appropriate route after successful insertion
-            }
-    
-          })
+              }
+            })
             .catch((error) => {
               console.error("Error inserting data: ", error);
               res.status(500).send("Failed to insert form data");
@@ -300,7 +351,7 @@ router.post("/submitGov", login, (req, res, next) => {
 
   userhelper.AddDetails(details).then((id) => {
     console.log(id);
-    if(req.files && req.files.Image){
+    if (req.files && req.files.Image) {
       let image = req.files.Image;
       image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
         if (!err) {
@@ -309,7 +360,7 @@ router.post("/submitGov", login, (req, res, next) => {
           console.log(err);
         }
       });
-    }else{
+    } else {
       console.log("No Image found Broooo");
     }
     res.redirect("/userpanel");
@@ -321,6 +372,17 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+// Array to mask
+const gov = ["aadhar card", "pan card", "ration card", "driving liscence"];
+
+// Define the maskNumber function
+function maskNumber(number) {
+  if (typeof number === "string") {
+    return number.replace(/\d(?=\d{4})/g, "*"); // Mask all but the last 4 digits
+  }
+  return number; // Return the original number if it's not a string
+}
+
 // Route to display all items (default view)
 router.get("/views", async (req, res) => {
   try {
@@ -331,14 +393,25 @@ router.get("/views", async (req, res) => {
       userhelper.GetPlace(),
     ]);
 
+    // Mask the government ID numbers if they belong to the gov array
+    product.forEach((item) => {
+      if (
+        item.category &&
+        gov.includes(item.category.toLowerCase()) &&
+        item.number
+      ) {
+        item.number = maskNumber(item.number);
+      }
+    });
+
     res.render("users/view", {
       user,
       title: "View",
       product,
       categories,
       place,
-      selectedPlace: '',
-      selectedCategory: ''
+      selectedPlace: "",
+      selectedCategory: "",
     });
   } catch (error) {
     console.error("Error fetching data: ", error);
@@ -358,6 +431,17 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetPlace(),
       ]);
 
+      // Mask the government ID numbers if they belong to the gov array
+      product.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         product,
@@ -365,8 +449,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
-        selectedPlace: '',
-        selectedCategory: ''
+        selectedPlace: "",
+        selectedCategory: "",
       });
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -380,6 +464,17 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetPlaceFound(),
       ]);
 
+      // Mask the government ID numbers if they belong to the gov array
+      found.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         product: [],
@@ -387,8 +482,8 @@ router.get("/views/:check", async (req, res) => {
         categories,
         place,
         user,
-        selectedPlace: '',
-        selectedCategory: ''
+        selectedPlace: "",
+        selectedCategory: "",
       });
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -405,6 +500,18 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategoriesFound(),
         userhelper.GetPlaceFound(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      found.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         found,
@@ -412,7 +519,7 @@ router.get("/views/:check", async (req, res) => {
         place,
         user,
         selectedPlace: req.query.fplace,
-        selectedCategory: ''
+        selectedCategory: "",
       });
     } else if (req.query.fplace === "") {
       const [found, categories, place] = await Promise.all([
@@ -420,14 +527,26 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategoriesFound(),
         userhelper.GetPlaceFound(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      found.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         found,
         categories,
         place,
         user,
-        selectedPlace: '',
-        selectedCategory: req.query.fcategories
+        selectedPlace: "",
+        selectedCategory: req.query.fcategories,
       });
     } else {
       const [found, categories, place] = await Promise.all([
@@ -435,6 +554,18 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategoriesFound(),
         userhelper.GetPlaceFound(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      found.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         found,
@@ -442,7 +573,7 @@ router.get("/views/:check", async (req, res) => {
         place,
         user,
         selectedPlace: req.query.fplace,
-        selectedCategory: req.query.fcategories
+        selectedCategory: req.query.fcategories,
       });
     }
   } else if (check === "check4") {
@@ -456,6 +587,18 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategories(),
         userhelper.GetPlace(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      product.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         product,
@@ -463,7 +606,7 @@ router.get("/views/:check", async (req, res) => {
         place,
         user,
         selectedPlace: req.query.fplace,
-        selectedCategory: ''
+        selectedCategory: "",
       });
     } else if (req.query.fplace === "") {
       const [product, categories, place] = await Promise.all([
@@ -471,14 +614,26 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategories(),
         userhelper.GetPlace(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      product.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         product,
         categories,
         place,
         user,
-        selectedPlace: '',
-        selectedCategory: req.query.fcategories
+        selectedPlace: "",
+        selectedCategory: req.query.fcategories,
       });
     } else {
       const [product, categories, place] = await Promise.all([
@@ -486,6 +641,18 @@ router.get("/views/:check", async (req, res) => {
         userhelper.GetCategories(),
         userhelper.GetPlace(),
       ]);
+
+      // Mask the government ID numbers if they belong to the gov array
+      product.forEach((item) => {
+        if (
+          item.category &&
+          gov.includes(item.category.toLowerCase()) &&
+          item.number
+        ) {
+          item.number = maskNumber(item.number);
+        }
+      });
+
       res.render("users/view", {
         title: "View",
         product,
@@ -493,14 +660,13 @@ router.get("/views/:check", async (req, res) => {
         place,
         user,
         selectedPlace: req.query.fplace,
-        selectedCategory: req.query.fcategories
+        selectedCategory: req.query.fcategories,
       });
     }
   } else {
     res.send("No data to show");
   }
 });
-
 
 router.get("/foundsomething", (req, res) => {
   let user = req.session.user;
@@ -528,7 +694,7 @@ router.post("/foundGov", login, (req, res) => {
 
   userhelper.FoundItems(details).then((id) => {
     console.log(id);
-    if(req.files && req.files.Image){
+    if (req.files && req.files.Image) {
       let image = req.files.Image;
       image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
         if (!err) {
@@ -537,7 +703,7 @@ router.post("/foundGov", login, (req, res) => {
           console.log(err);
         }
       });
-    }else{
+    } else {
       console.log("No Image found Broooo");
     }
     res.redirect("/userpanel");
@@ -553,7 +719,13 @@ router.get("/userpanel", login, (req, res) => {
   userhelper.UserDetails(mail).then((lostItem) => {
     console.log("fetched");
 
-    res.render("users/userpanel", { title: "User", user, lostItem, nm, nofooter :true });
+    res.render("users/userpanel", {
+      title: "User",
+      user,
+      lostItem,
+      nm,
+      nofooter: true,
+    });
   });
 });
 
@@ -563,7 +735,13 @@ router.get("/userpanel/lost", login, (req, res, next) => {
     let nm = "Lost";
     userhelper.UserDetails(req.session.mail).then((lostItem) => {
       console.log("Fetched Lost Items");
-      res.render("users/userpanel", { title: "User", lostItem, user, nm, nofooter :true }); // Pass foundItem to the view
+      res.render("users/userpanel", {
+        title: "User",
+        lostItem,
+        user,
+        nm,
+        nofooter: true,
+      }); // Pass foundItem to the view
     }); // Ensure the function name matches your helper method
   } catch (err) {
     next(err); // Pass the error to the error handler
@@ -576,7 +754,13 @@ router.get("/userpanel/found", login, (req, res, next) => {
     let nm = "found";
     userhelper.ProdDetails(req.session.mail).then((foundItem) => {
       console.log("Fetched founded Items");
-      res.render("users/userpanel", { title: "User", foundItem, user, nm ,nofooter :true}); // Pass foundItem to the view
+      res.render("users/userpanel", {
+        title: "User",
+        foundItem,
+        user,
+        nm,
+        nofooter: true,
+      }); // Pass foundItem to the view
     }); // Ensure the function name matches your helper method
   } catch (err) {
     next(err); // Pass the error to the error handler
@@ -589,7 +773,12 @@ router.get("/userpanel/chatspanel", login, async (req, res, next) => {
   try {
     const messages = await userhelper.ShowMessagesId(mail, user.username);
     console.log(messages);
-    res.render("users/chatspanel", { title: "Chats", user, messages, nofooter :true });
+    res.render("users/chatspanel", {
+      title: "Chats",
+      user,
+      messages,
+      nofooter: true,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "An error occurred" }); // Send an error response in case of failure
@@ -648,9 +837,15 @@ router.get("/view-products/found:id", async (req, res, next) => {
     const productId = req.params.id;
     const foundItem = await userhelper.GetfoundById(productId); // Ensure the function name matches your helper method
     console.log(foundItem);
+
+    // Mask the government ID numbers if they belong to the gov array
+    if (gov.includes(foundItem.category.toLowerCase())) {
+      foundItem.number = maskNumber(foundItem.number);
+      console.log(foundItem.number);
+    }
     res.render("users/viewProducts", { title: "View", foundItem, user }); // Pass foundItem to the view
   } catch (err) {
-    next(err); // Pass the error to the error handler
+    next("error : ", err); // Pass the error to the error handler
   }
 });
 
@@ -660,6 +855,12 @@ router.get("/view-products/product:id", async (req, res, next) => {
     const productId = req.params.id;
     const lostItem = await userhelper.GetLostById(productId); // Ensure the function name matches your helper method
     console.log(lostItem);
+
+    // Mask the government ID numbers if they belong to the gov array
+    if (gov.includes(lostItem.category.toLowerCase())) {
+      lostItem.number = maskNumber(lostItem.number);
+      console.log(lostItem.number);
+    }
     res.render("users/viewProducts", { title: "View", lostItem, user }); // Pass lostItem to the view
   } catch (err) {
     next(err); // Pass the error to the error handler
@@ -690,6 +891,11 @@ router.get("/chat/found:id", loginChat, async (req, res, next) => {
           category
         );
 
+        if (gov.includes(foundItem.category.toLowerCase())) {
+          foundItem.number = maskNumber(foundItem.number);
+          console.log(foundItem.number);
+        }
+
         res.render("users/chat", {
           title: "Chat",
           foundItem,
@@ -711,7 +917,11 @@ router.get("/chat/found:id", loginChat, async (req, res, next) => {
         category
       );
       console.log("messages", messages);
-
+      // Mask the government ID numbers if they belong to the gov array
+      if (gov.includes(foundItem.category.toLowerCase())) {
+        foundItem.number = maskNumber(foundItem.number);
+        console.log(foundItem.number);
+      }
       res.render("users/chat", {
         title: "Chat",
         foundItem,
@@ -749,6 +959,11 @@ router.get("/chat/product:id", loginChat, async (req, res, next) => {
           category
         );
 
+        // Mask the government ID numbers if they belong to the gov array
+        if (gov.includes(lostItem.category.toLowerCase())) {
+          lostItem.number = maskNumber(lostItem.number);
+          console.log(lostItem.number);
+        }
         res.render("users/chat", {
           title: "Chat",
           lostItem,
@@ -770,7 +985,11 @@ router.get("/chat/product:id", loginChat, async (req, res, next) => {
         category
       );
       console.log("messages", messages);
-
+      // Mask the government ID numbers if they belong to the gov array
+      if (gov.includes(lostItem.category.toLowerCase())) {
+        lostItem.number = maskNumber(lostItem.number);
+        console.log(lostItem.number);
+      }
       res.render("users/chat", {
         title: "Chat",
         lostItem,
